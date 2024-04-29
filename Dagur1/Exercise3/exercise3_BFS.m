@@ -1,6 +1,6 @@
 clear all, close all, clc;
 
-PathFinder(30,0.2);
+PathFinder(30,0.4);
 
 function PathFinder(N, P)
     if N<1 || P<0 || P>1
