@@ -29,7 +29,7 @@ function [path,found] = PathFinder(N, P, plotBool)
         r = current(1);
         c = current(2);
     
-        % Check if we've reached the top row
+        % Check if we've reached the bottom row
         if r == 1
             found = true;
             final_r = r;
