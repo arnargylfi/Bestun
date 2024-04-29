@@ -1,4 +1,4 @@
-function [path,found] = PathFinder(N, P)
+function [path,found] = PathFinder(N, P, plotBool)
     if N<1 || P<0 || P>1
         disp('Invalid N or P')
         return
@@ -9,12 +9,6 @@ function [path,found] = PathFinder(N, P)
     obstacles = rand(N) < P;
     Playing_board = [1 1;1 N;N N;N 1;1 1];
     
-    % Visualize grid and obstacles
-    figure; hold on;
-    axis([0 N+1 0 N+1]);
-    plot(Playing_board(:,1), Playing_board(:,2), 'c-', 'LineWidth', 1);
-    plot(x(:), y(:), 'b.');
-    plot(x(obstacles), y(obstacles), 'ro', 'MarkerSize', 7.5);
     
     % Create a grid that marks the obstacles and visited cells
     grid = zeros(N,N);
@@ -88,11 +82,20 @@ function [path,found] = PathFinder(N, P)
         path = [path_x path_y];
         
         % Plot the path as a line
-        plot(path_x, path_y, 'g-', 'LineWidth', 2); % Green line for the path
         disp('Path found!');
-        fprintf('length of path = %d\n', length(path_x))
+        if plotBool
+            % Visualize grid and obstacles
+            figure; hold on;
+            axis([0 N+1 0 N+1]);
+            plot(Playing_board(:,1), Playing_board(:,2), 'c-', 'LineWidth', 1);
+            plot(x(:), y(:), 'b.');
+            plot(x(obstacles), y(obstacles), 'ro', 'MarkerSize', 7.5);
+            plot(path_x, path_y, 'g-', 'LineWidth', 2); % Green line for the path
+            fprintf('length of path = %d\n', length(path_x))
+        end
     else
         disp('No path available.');
+        path=[];
     end
 end
 

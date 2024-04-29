@@ -1,4 +1,4 @@
-function [path,found] = PathFinder(N, P)
+function [path,found] = PathFinder(N, P, )
     if N<1 || P<0 || P>1
         disp('Invalid N or P')
         return
@@ -85,6 +85,7 @@ function [path,found] = PathFinder(N, P)
         % Reverse the path coordinates since we traced back from the goal
         path_x = fliplr(path_x);
         path_y = fliplr(path_y);
+        path = [path_x path_y];
         
         % Plot the path as a line
         plot(path_x, path_y, 'g-', 'LineWidth', 2); % Green line for the path
