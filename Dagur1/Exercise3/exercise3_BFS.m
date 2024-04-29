@@ -4,7 +4,7 @@ clear all, close all, clc;
 PathFinder(30,0.2);
 
 function PathFinder(N, P)
-    if n<1 || P<0 || P>1
+    if N<1 || P<0 || P>1
         disp('Invalid N or P')
         return
     end
@@ -21,34 +21,30 @@ function PathFinder(N, P)
     plot(x(:), y(:), 'b.');
     plot(x(obstacles), y(obstacles), 'ro', 'MarkerSize', 7.5);
     
-    % BFS to find the shortest path from bottom to top
     % Create a grid that marks the obstacles and visited cells
-    grid = -ones(N); % Initialize with -1, marking obstacles
-    grid(~obstacles) = 0; % Mark free cells with 0
+    grid = zeros(N,N);
+    grid(obstacles) = -1;
     
-    % Queue for BFS: [row, col, distance]
-    queue = [];
+    lastPos = [];
     for i = 1:N
         if grid(N, i) == 0
-            queue(end+1, :) = [N, i, 0]; % Add starting points (bottom row, without obstacles)
+            lastPos(end+1, :) = [N, i]; % Add starting points (bottom row, without obstacles)
             grid(N, i) = 1; % Mark as visited
         end
     end
     
     found = false;
-    while ~isempty(queue)
-        current = queue(1, :);
-        queue(1, :) = []; % Dequeue
+    while ~isempty(lastPos)
+        current = lastPos(1, :);
+        lastPos(1, :) = []; %Reset
         r = current(1);
         c = current(2);
-        d = current(3);
     
         % Check if we've reached the top row
         if r == 1
             found = true;
             final_r = r;
             final_c = c;
-            final_d = d;
             break;
         end
     
@@ -58,8 +54,8 @@ function PathFinder(N, P)
             nr = r + directions(i, 1);
             nc = c + directions(i, 2);
             if nr > 0 && nr <= N && nc > 0 && nc <= N && grid(nr, nc) == 0
-                queue(end+1, :) = [nr, nc, d+1]; % Enqueue
-                grid(nr, nc) = grid(r, c) + 1; % Mark as visited with distance
+                lastPos(end+1, :) = [nr, nc];
+                grid(nr, nc) = grid(r, c) + 1; %Mark as visited
             end
         end
     end
