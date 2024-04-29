@@ -29,7 +29,7 @@ function [path,found] = PathFinder(N, P, plotBool)
         r = current(1);
         c = current(2);
     
-        % Check if we've reached the bottom row
+        % Check if we've reached the top row
         if r == 1
             found = true;
             final_r = r;
@@ -79,10 +79,10 @@ function [path,found] = PathFinder(N, P, plotBool)
         % Reverse the path coordinates since we traced back from the goal
         path_x = fliplr(path_x);
         path_y = fliplr(path_y);
-        path = [path_x path_y];
+        path = [path_x ; path_y];
         
         % Plot the path as a line
-        disp('Path found!');
+        %disp('Path found!');
         if plotBool
             % Visualize grid and obstacles
             figure; hold on;
@@ -94,8 +94,7 @@ function [path,found] = PathFinder(N, P, plotBool)
             fprintf('length of path = %d\n', length(path_x))
         end
     else
-        disp('No path available.');
+        %disp('No path available.');
         path=[];
     end
 end
-
