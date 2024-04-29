@@ -1,5 +1,4 @@
 clear all, close all, clc;
-% Create grid
 
 PathFinder(30,0.2);
 
