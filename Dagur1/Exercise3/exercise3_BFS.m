@@ -6,7 +6,7 @@ N = 30;
 % Obstacle density
 P = 0.3;
 obstacles = rand(N) < P;
-Playing_board = [0 0;0 N;N N;N 0;0 0];
+Playing_board = [1 1;1 N;N N;N 1;1 1];
 
 % Visualize grid and obstacles
 figure; hold on;
@@ -96,5 +96,4 @@ if found
 else
     disp('No path available.');
 end
-
 
