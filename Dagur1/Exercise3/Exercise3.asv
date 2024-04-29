@@ -1,0 +1,7 @@
+%create grid
+N = 20;
+[x,y] = meshgrid(1:N, 1:N);
+%plot grid
+plot(x,y,'b.')
+%%
+P = 0.3 %Obstacle density
