@@ -6,15 +6,33 @@ function obstaclePathfinder(N,P)
     grid = zeros(N, N);
     numObstacles = round(P * N * N);
     obstacles = randperm(N*N, numObstacles);
-    grid(obstacles) = 1;
+    grid(1,:) = 1;
+    grid(obstacles) = -1;
 
     % A* pathfinding from bottom to top
-    startNodes = find(grid(1,:) == 0); % All non-obstacle nodes at bottom
+    startNodes = find(grid(1,:) == 1); % All non-obstacle nodes at bottom
     endNodes = find(grid(N,:) == 0);   % All non-obstacle nodes at top
     disp(startNodes)
     disp(endNodes)
     path = [];
-    
+        
+    for i=1:N
+        for j=1:N
+            if grid(i,j) >=0
+                neighbours = [i+1 j;i 1-j;i 1+j];
+                if grid(i,j+1)
+                if j==1 || j==N
+                   
+                end
+            end
+        end
+        if j==N && find(grid(N,:) > 0)
+                    disp('Path found!')
+                    pathFound = True;
+                    endNode = grid(i,j);
+                    break;
+        end
+    end
     % Try finding a path from any bottom edge node to any top edge node
     for start = startNodes
         for finish = endNodes
