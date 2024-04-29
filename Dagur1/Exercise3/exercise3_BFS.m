@@ -6,9 +6,12 @@ N = 30;
 % Obstacle density
 P = 0.3;
 obstacles = rand(N) < P;
+Playing_board = [0 0;0 N;N N;N 0;0 0];
 
 % Visualize grid and obstacles
 figure; hold on;
+axis([0 N+1 0 N+1]);
+plot(Playing_board(:,1), Playing_board(:,2), 'c-', 'LineWidth', 1);
 plot(x(:), y(:), 'b.');
 plot(x(obstacles), y(obstacles), 'ro', 'MarkerSize', 7.5);
 
