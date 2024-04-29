@@ -1,9 +1,13 @@
 clear all, close all, clc;
 % Create grid
 
-PathFinder(30,0.3);
+PathFinder(30,0.2);
 
 function PathFinder(N, P)
+    if n<1 || P<0 || P>1
+        disp('Invalid N or P')
+        return
+    end
     [x, y] = meshgrid(1:N, 1:N);
     
     % Obstacle density
