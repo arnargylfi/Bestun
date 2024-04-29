@@ -1,14 +1,7 @@
 clear all, close all, clc;
 % Create grid
 
-<<<<<<< HEAD
 PathFinder(30,0.3);
-=======
-% Obstacle density
-P = 0.3;
-obstacles = rand(N) < P;
-Playing_board = [1 1;1 N;N N;N 1;1 1];
->>>>>>> d1e9bfa3d5942d3e0cb68b972c45dce745389e7d
 
 function PathFinder(N, P)
     [x, y] = meshgrid(1:N, 1:N);
