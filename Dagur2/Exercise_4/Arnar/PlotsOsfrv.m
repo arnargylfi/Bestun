@@ -7,8 +7,7 @@ y02 = 1;
 
 range = [0,5];
 x = range(1):0.005:range(2);
-hlist = 0.01:0.005:0.25;
-%%
+hlist = 0.005:0.005:0.25;
 for i = 0:length(hlist)-1
     clf
     h = hlist(length(hlist)-i);
@@ -23,7 +22,7 @@ for i = 0:length(hlist)-1
     subplot(1,2,1)
     hold on
     plot(x,func1correct(x),'b-')
-    plot(t,YEuler1,'black--')
+    plot(t,YEuler1,'black--','LineWidth',2)
     plot(t,YAdamB1,'r.-')
     legend('Correct solution','Euler approximation','Adams Bashforth approximation')
     set(gca, 'LineWidth',2, 'XGrid','on', 'GridLineStyle','--')
@@ -32,12 +31,12 @@ for i = 0:length(hlist)-1
     subplot(1,2,2)
     hold on
     plot(x,func2correct(x),'b-')
-    plot(t,YEuler2,'black--')
+    plot(t,YEuler2,'black--','LineWidth',2)
     plot(t,YAdamB2,'r.-')
     legend('Correct solution','Euler approximation','Adams Bashforth approximation')
     set(gca, 'LineWidth',2, 'XGrid','on', 'GridLineStyle','--')
     title('$y = \sin(3t) \cdot e^{-t}$', 'Interpreter', 'latex');
     sgtitle(['Comparison of Correct Solution and Approximations ($h = $' num2str(h) ')'], 'Interpreter', 'latex');
-    pause(0.25)
+    pause(0.1)
 end
 

@@ -45,12 +45,12 @@ if linur==3
     quiver3(zeros(1,dalkar), zeros(1,dalkar), zeros(1,dalkar), ...
     A(1,:), A(2,:), A(3,:), 'r');
 
-
+    
     axis equal;
     grid on
     yline(0)
     xline(0)
-
+    set(gca, 'LineWidth',2, 'XGrid','on', 'GridLineStyle','--')
 end
 
 for i = 1:dalkar
