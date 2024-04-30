@@ -1,6 +1,9 @@
 %% Test the PathFinder function for different grid sizes
 clear all; close all; clc;
 
+PathFinder(20,0.3,true);
+PathFinder(20,0.6,true);
+
 N = flip(20:20:100); % Grid size
 P = 0.3; % obstacle density
 
@@ -22,15 +25,15 @@ successRates = zeros(length(P_range), 1);
 for p_idx = 1:length(P_range)
     P = P_range(p_idx);
     numSuccess = 0;
-    
+
     for sim = 1:numSimulations
-        
+
         [path,found] = PathFinder(N,P,false);        
         if found
             numSuccess = numSuccess + 1;
         end
     end
-    
+
     % Calculate success rate for current density
     successRates(p_idx) = numSuccess / numSimulations;
 end

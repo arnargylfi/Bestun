@@ -15,6 +15,6 @@ function plot3DParabola()
     hold off;
     title('Parabolic surface with tangent at [0.5 -0.5]T');
     xlabel('X axis');
-    xlabel('Y axis');
-    xlabel('Z axis');s
+    ylabel('Y axis');
+    zlabel('Z axis');
 end

@@ -8,9 +8,9 @@ function polyInterpolation(data)
     dy_fit = polyval(dpol,x_fit);
     zeroCrossings = find(dy_fit(1:end-1) .* dy_fit(2:end) < 0);
     x_minmax = x_fit(zeroCrossings) + (x_fit(zeroCrossings + 1) - x_fit(zeroCrossings)) .*(0 - dy_fit(zeroCrossings)) ./ (dy_fit(zeroCrossings + 1) - dy_fit(zeroCrossings));
-    disp('Value of x in the maxima/minima:')
-    disp(x_minmax);
     y_minmax = polyval(pol, x_minmax);
+    disp('Coordintes of the maxima/minima:')
+    disp([x_minmax;y_minmax]);
     figure;
     hold on;
     plot(x,y,'bo',DisplayName='Data points');

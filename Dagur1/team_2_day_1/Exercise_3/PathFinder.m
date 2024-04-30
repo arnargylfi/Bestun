@@ -82,7 +82,7 @@ function [path,found] = PathFinder(N, P, plotBool)
         path = [path_x ; path_y];
         
         % Plot the path as a line
-        %disp('Path found!');
+        disp('Path found!');
         if plotBool
             % Visualize grid and obstacles
             figure; hold on;
@@ -95,6 +95,11 @@ function [path,found] = PathFinder(N, P, plotBool)
         end
     else
         %disp('No path available.');
+        figure; hold on;
+        axis([0 N+1 0 N+1]);
+        plot(Playing_board(:,1), Playing_board(:,2), 'c-', 'LineWidth', 1);
+        plot(x(:), y(:), 'b.');
+        plot(x(obstacles), y(obstacles), 'ro', 'MarkerSize', 7.5);
         path=[];
     end
 end
