@@ -1,7 +1,3 @@
-close all; clear all; clc;
-data = [0 0;2 -1;2.8 5;4 2;5 -1;6 5;7 8];
-polyInterpolation(data);
-
 function polyInterpolation(data)
     x = data(:,1);
     y = data(:,2);
@@ -10,17 +6,22 @@ function polyInterpolation(data)
     x_fit = linspace(min(x), max(x), 100);
     y_fit = polyval(pol, x_fit);
     dy_fit = polyval(dpol,x_fit);
-    min_max = find(~dy_fit);
-    x_min_max = x_fit(min_max);
-    y_min_max = y_fit(min_max);
+    zeroCrossings = find(dy_fit(1:end-1) .* dy_fit(2:end) < 0);
+    x_minmax = x_fit(zeroCrossings) + (x_fit(zeroCrossings + 1) - x_fit(zeroCrossings)) .*(0 - dy_fit(zeroCrossings)) ./ (dy_fit(zeroCrossings + 1) - dy_fit(zeroCrossings));
+    disp('Value of x in the maxima/minima:')
+    disp(x_minmax);
+    y_minmax = polyval(pol, x_minmax);
     figure;
     hold on;
     plot(x,y,'bo',DisplayName='Data points');
     plot(x_fit,y_fit, 'b-', DisplayName='Interpolation polynomial p', LineWidth=1);
     plot(x_fit,dy_fit,'k-', DisplayName='First-order derivative of p', LineWidth=1);
     yline(0,'r-', Displayname='Zero level', LineWidth=1);
-    plot(x_min_max,y_min_max,'xr',Displa)
-    hold off;
+    plot(x_minmax,y_minmax,'rx',DisplayName='Locations of local maxima/minima', LineWidth=2);
     legend('show', 'Location', 'southeast');
+    for i = 1:length(x_minmax)
+        plot([x_minmax(i), x_minmax(i)], [0, y_minmax(i)], 'g:', 'LineWidth', 2, 'HandleVisibility', 'off');
+    end
+    hold off;
     grid on;
 end
