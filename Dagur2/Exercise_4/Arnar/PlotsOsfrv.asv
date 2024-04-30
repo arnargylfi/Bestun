@@ -1,0 +1,28 @@
+func1 = @(t,y) -y +3*cos(3*t)*exp(-t);
+func1correct =  @(t) sin(3*t).*exp(-t);
+func2 = @(t,y) y;
+func2correct = @(t) exp(t);
+
+range = [0,5];
+h = 0.1;
+y01 = 0;
+YEuler1 = Euler(h,func1,y01,range);
+YAdamB1 = AdamsBashforth(h,func1,y01,range);
+
+YEuler2 = Euler(h,func2,y01,range);
+YAdamB2 = AdamsBashforth(h,func2,y01,range);
+
+
+t = range(1):h:range(2);
+subplot(1,2,1)
+hold on
+plot(t,func1correct(t))
+plot(t,YEuler1)
+plot(t,YAdamB1)
+legend('Correct solution','Euler approximation','Adams Bashforth approximation')
+set(gca, 'LineWidth',2, 'XGrid','on', 'GridLineStyle','--')
+subplot(1,2,2)
+
+
+
+
