@@ -10,10 +10,12 @@ end
 v1 = A(:,1);
 orthoA = zeros(size(A));
 orthoA(:,1) = v1/norm(v1);
-summa = 0;
 for i = 2:dalkar
     vi = A(:,i);
-    summa = summa + (vi'*orthoA(:,i-1))*orthoA(:,i-1);
+    summa = zeros(size(vi));
+    for j = 1:i-1
+        summa = summa + (vi'*orthoA(:, j))*orthoA(:, j);
+    end
     ti = vi - summa;
     orthoA(:,i) = ti/norm(ti);
 end
@@ -35,19 +37,31 @@ end
 
 if linur==3
     hold on
-    plot3([0,orthoA(1,1)],[0,orthoA(2,1)],[0,orthoA(3,1)],'b','LineWidth', 2)
-    plot3([0,orthoA(1,2)],[0,orthoA(2,2)],[0,orthoA(3,2)],'b','LineWidth', 2)
-    plot3([0,orthoA(1,3)],[0,orthoA(2,3)],[0,orthoA(3,3)],'b','LineWidth', 2)
- 
-    plot3([0,A(1,1)],[0,A(2,1)],[0,A(3,1)],'r')
-    plot3([0,A(1,2)],[0,A(2,2)],[0,A(3,2)],'r')
-    plot3([0,A(1,3)],[0,A(2,3)],[0,A(3,3)],'r')
+    quiver3(zeros(1,dalkar), zeros(1,dalkar), zeros(1,dalkar), ...
+    orthoA(1,:), orthoA(2,:), orthoA(3,:), 'b', 'LineWidth', 2);
+    hold on;
+    
+    % Plot the original vectors
+    quiver3(zeros(1,dalkar), zeros(1,dalkar), zeros(1,dalkar), ...
+    A(1,:), A(2,:), A(3,:), 'r');
+
 
     axis equal;
     grid on
     yline(0)
     xline(0)
-    zline(0)
+
+end
+
+for i = 1:dalkar
+    for j = i+1:dalkar
+        dot_product = dot(orthoA(:, i), orthoA(:, j));
+        if abs(dot_product) == 0
+            disp(['Vectors ', num2str(i), ' and ', num2str(j), ' are not orthogonal. Dot product: ', num2str(dot_product)]);
+        else
+            disp(['Vectors ', num2str(i), ' and ', num2str(j), ' are orthogonal. Dot product: ', num2str(dot_product)]);
+        end
+    end
 end
 
 
