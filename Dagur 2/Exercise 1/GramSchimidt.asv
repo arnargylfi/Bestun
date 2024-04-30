@@ -1,0 +1,27 @@
+%Gram Schmidt
+function orthoA = GramSchmidt(A)
+
+
+[linur,dalkar] = size(A);
+if det(A*A')==0 || dalkar>linur % input vectors are linearly dependent
+    error('Input vectors are linearly dependent')
+end
+
+v1 = A(:,1);
+orthoA = zeros(size(A));
+orthoA(:,1) = v1/norm(v1);
+summa = 0;
+for i = 2:dalkar
+    vi = A(:,i);
+    summa = summa + (vi'*orthoA(:,i-1))*orthoA(:,i-1);
+    ti = vi - summa;
+    orthoA(:,i) = ti/norm(ti);
+end
+
+if linur==2
+    plot(orthoA())
+end
+
+
+
+end
