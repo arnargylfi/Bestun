@@ -27,7 +27,7 @@ for i = 0:length(hlist)-1
     legend('Correct solution','Euler approximation','Adams Bashforth approximation')
     set(gca, 'LineWidth',2, 'XGrid','on', 'GridLineStyle','--')
     hold off
-    title('$y = \sin(3t) \cdot e^{-t}$', 'Interpreter', 'latex');
+    title("$y' = -y+\cos(3t) \cdot e^{-t}$", 'Interpreter', 'latex');
     subplot(1,2,2)
     hold on
     plot(x,func2correct(x),'b-')
@@ -35,7 +35,7 @@ for i = 0:length(hlist)-1
     plot(t,YAdamB2,'r.-')
     legend('Correct solution','Euler approximation','Adams Bashforth approximation')
     set(gca, 'LineWidth',2, 'XGrid','on', 'GridLineStyle','--')
-    title('$y = \sin(3t) \cdot e^{-t}$', 'Interpreter', 'latex');
+    title("$y' = y$", 'Interpreter', 'latex');
     sgtitle(['Comparison of Correct Solution and Approximations ($h = $' num2str(h) ')'], 'Interpreter', 'latex');
     pause(0.1)
 end
