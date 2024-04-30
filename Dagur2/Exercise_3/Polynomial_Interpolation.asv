@@ -1,0 +1,20 @@
+data = [0 0;2 -1;2.8 5;4 2;5 -1;6 5;7 8];
+polyInterpolation(data);
+
+function polyInterpolation(data)
+    x = data(:,1);
+    y = data(:,2);
+    pol = polyfit(x,y,(length(x)-1));
+    dpol = polyder(pol);
+    x_fit = linspace(min(x), max(x), 100);
+    y_fit = polyval(pol, x_fit);
+    dy_fit = polyval(dp,x_fit,)
+    fdiff = diff(f,xi);
+    figure;
+    hold on;
+    plot(x,y,'bo');
+    plot(x_fit,0,'r-');
+    plot(x-fit,y_fit, 'b-');
+    plot(fdiff,xi,'k-');
+    hold off;
+end
