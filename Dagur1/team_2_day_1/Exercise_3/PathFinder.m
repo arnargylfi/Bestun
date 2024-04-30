@@ -1,9 +1,4 @@
-clear all, close all, clc;
-% Create grid
-
-PathFinder(30,0.2);
-
-function PathFinder(N, P)
+function [path,found] = PathFinder(N, P, plotBool)
     if N<1 || P<0 || P>1
         disp('Invalid N or P')
         return
@@ -14,12 +9,6 @@ function PathFinder(N, P)
     obstacles = rand(N) < P;
     Playing_board = [1 1;1 N;N N;N 1;1 1];
     
-    % Visualize grid and obstacles
-    figure; hold on;
-    axis([0 N+1 0 N+1]);
-    plot(Playing_board(:,1), Playing_board(:,2), 'c-', 'LineWidth', 1);
-    plot(x(:), y(:), 'b.');
-    plot(x(obstacles), y(obstacles), 'ro', 'MarkerSize', 7.5);
     
     % Create a grid that marks the obstacles and visited cells
     grid = zeros(N,N);
@@ -55,7 +44,7 @@ function PathFinder(N, P)
             nc = c + directions(i, 2);
             if nr > 0 && nr <= N && nc > 0 && nc <= N && grid(nr, nc) == 0
                 lastPos(end+1, :) = [nr, nc];
-                grid(nr, nc) = grid(r, c) + 1; % Mark as visited with distance
+                grid(nr, nc) = grid(r, c) + 1; %Mark as visited
             end
         end
     end
@@ -90,13 +79,22 @@ function PathFinder(N, P)
         % Reverse the path coordinates since we traced back from the goal
         path_x = fliplr(path_x);
         path_y = fliplr(path_y);
+        path = [path_x ; path_y];
         
         % Plot the path as a line
-        plot(path_x, path_y, 'g-', 'LineWidth', 2); % Green line for the path
-        disp('Path found!');
-        fprintf('length of path = %d\n', length(path_x))
+        %disp('Path found!');
+        if plotBool
+            % Visualize grid and obstacles
+            figure; hold on;
+            axis([0 N+1 0 N+1]);
+            plot(Playing_board(:,1), Playing_board(:,2), 'c-', 'LineWidth', 1);
+            plot(x(:), y(:), 'b.');
+            plot(x(obstacles), y(obstacles), 'ro', 'MarkerSize', 7.5);
+            plot(path_x, path_y, 'g-', 'LineWidth', 2); % Green line for the path
+            fprintf('length of path = %d\n', length(path_x))
+        end
     else
-        disp('No path available.');
+        %disp('No path available.');
+        path=[];
     end
 end
-
