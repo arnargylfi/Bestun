@@ -113,7 +113,7 @@ function [positions, totalHeight] = packRectangles(rectangles, W)
         height = rectangles(i, 2);
 
         % Find position to place rectangle
-        [bestX, bestY] = findPosition(width, height, skyline);
+        [bestX, bestY] = findPosition(width, skyline);
         if bestX == -1
             error('No valid position found for a rectangle. Check rectangle dimensions and bin width.');
         end
@@ -128,7 +128,7 @@ function [positions, totalHeight] = packRectangles(rectangles, W)
     totalHeight = max(skyline);  % Max height of skyline is total height used
 end
 
-function [bestX, bestY] = findPosition(width, height, skyline)
+function [bestX, bestY] = findPosition(width, skyline)
     bestY = inf;
     bestX = -1;
     W = length(skyline);
