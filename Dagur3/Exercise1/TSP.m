@@ -11,13 +11,13 @@
     for j = 1:iterations
         clf
         dist = 0;
-%         plot(cities(:,1),cities(:,2),'bo') %c COMMENT IN FOR ANIMATION
-%         title(['Distance = ', num2str(olddist)]);
+        plot(cities(:,1),cities(:,2),'bo') %c COMMENT IN FOR ANIMATION
+        title(['Distance = ', num2str(olddist)]);
         for i=1:length(connections)-1   
             start_city = connections(i);
             end_city = connections(i+1);
             dist = dist+sqrt((cities(start_city,1)-cities(end_city,1))^2+(cities(start_city,2)-cities(end_city,2))^2);
-%             line([cities(start_city, 1), cities(end_city, 1)], [cities(start_city, 2), cities(end_city, 2)], 'Color', 'r');
+            line([cities(start_city, 1), cities(end_city, 1)], [cities(start_city, 2), cities(end_city, 2)], 'Color', 'r');
         end
         if j == 1
             original_dist = dist;%vista fyrsta sem original distance 
@@ -35,13 +35,13 @@
         temp = connections(swapping_indices(1));
         connections(swapping_indices(1)) = connections(swapping_indices(2));
         connections(swapping_indices(2)) = temp;
-%         pause(0.05)
+        pause(0.05)
     if mod(j,1000) == 0 %to keep track of number of iterations
         disp(['iteration ',num2str(j)])
     end
     end
 %%
-
+figure()
 subplot(1,2,1)
 plot(cities(:,1),cities(:,2),'bo')
 hold on
@@ -67,7 +67,10 @@ title(['Optimized path, total length = ',num2str(olddist)])
 sgtitle(['Optimized path path length divided by initial path length =',num2str(olddist/original_dist)])
 %%
 hold off
+figure()
 plot(1:iterations, distances)
+set(gca,'xscale','log')
 xlabel('Number of iterations')
 ylabel('Path length')
 title('Path length as a function of iterations')
+
