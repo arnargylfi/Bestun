@@ -1,56 +1,59 @@
 clear all, close all, clc
 N = 50; % Number of rectangles
-W = 5; % Width of the bin
+W = 6; % Width of the bin
+iterations = 100;
 % Generate random widths and heights for each rectangle
-widths = randi([1, W], N, 1);
-heights = randi([1, W], N, 1);
+widths = randi([1, W/2], N, 1);
+heights = randi([1, W/2], N, 1);
 
 % Initial random order of rectangles
 rectangles = [widths heights];
 
 % Pack the rectangles
-[positions_new, totalHeight_new] = packRectangles(rectangles, W);
+[positions_initial, totalHeight_initial] = packRectangles(rectangles, W);
+[positions_optimized, totalHeight_optimized, newRectangles] = optimizedPacking(rectangles, W, iterations);
 
-% Plotting the rectangles
+% Determine maximum height for consistent y-axis in plots
+maxHeight = totalHeight_initial;
+
+% Plotting both packings in subplots
 figure;
+subplot(1, 2, 1); % First subplot
 hold on;
-axis([0 W 0 totalHeight_new]);
+axis([-2 W+2 0 maxHeight]);
 colors = lines(N); % Generate N distinct colors
-
 for i = 1:N
-    rectangle('Position', [positions_new(i, 1), positions_new(i, 2), rectangles(i, 1), rectangles(i, 2)], ...
+    rectangle('Position', [positions_initial(i, 1), positions_initial(i, 2), rectangles(i, 1), rectangles(i, 2)], ...
               'EdgeColor', 'k', 'FaceColor', colors(i,:), 'LineWidth', 2);
 end
-title('Rectangle Placement first');
+title(['Initial Placement height = ', num2str(totalHeight_initial)]);
 xlabel('Width');
 ylabel('Height');
 hold off;
 
-%%
-iterations = 100000;
-[positions_new, totalHeight_new, newRectangles] = optimizedPacking(rectangles, W, iterations);
-
-figure;
+subplot(1, 2, 2); % Second subplot
 hold on;
-axis([0 W 0 totalHeight_new]);
-colors = lines(N); % Generate N distinct colors
-
+axis([-2 W+2 0 maxHeight]);
 for i = 1:N
-    rectangle('Position', [positions_new(i, 1), positions_new(i, 2), newRectangles(i, 1), newRectangles(i, 2)], ...
+    rectangle('Position', [positions_optimized(i, 1), positions_optimized(i, 2), newRectangles(i, 1), newRectangles(i, 2)], ...
               'EdgeColor', 'k', 'FaceColor', colors(i,:), 'LineWidth', 2);
 end
-title('Rectangle Placement optimised');
+title(['Optimized Placement height = ', num2str(totalHeight_optimized)]);
 xlabel('Width');
 ylabel('Height');
 hold off;
 
+
 %%
 
 
-function [positions, totalHeight, newRectangles] = optimizedPacking(rectangles, W, iterations)
+function [positions, totalHeight, currentRectangles] = optimizedPacking(rectangles, W, iterations)
     currentRectangles = rectangles;
-    [~, currentTotalHeight] = packRectangles(currentRectangles, W);
-    
+    [positions, currentTotalHeight] = packRectangles(currentRectangles, W);  % Corrected line
+    firstHeight = currentTotalHeight
+    figure; % Create a new figure for animation
+    colors = lines(size(rectangles, 1)); % Generate distinct colors for each rectangle
+
     for iter = 1:iterations
         % Create a new candidate by swapping two rectangles
         newRectangles = currentRectangles;
@@ -72,6 +75,18 @@ function [positions, totalHeight, newRectangles] = optimizedPacking(rectangles, 
         % Calculate new packing
         [newPositions, newTotalHeight] = packRectangles(newRectangles, W);
 
+        % Update the figure for animation
+        clf; % Clear current figure window
+        hold on;
+        axis([-2 W+2 0 firstHeight+5]);
+        for i = 1:size(rectangles, 1)
+            rectangle('Position', [positions(i, 1), positions(i, 2), currentRectangles(i, 1), currentRectangles(i, 2)], ...
+                      'EdgeColor', 'k', 'FaceColor', colors(i,:), 'LineWidth', 2);
+        end
+        title(['Iteration: ', num2str(iter), ' Height: ', num2str(newTotalHeight)]);
+        drawnow; % Update the figure window
+        hold off;
+
         % Accept new configuration if it improves or maintains the total height
         if newTotalHeight <= currentTotalHeight
             currentRectangles = newRectangles;
@@ -81,8 +96,8 @@ function [positions, totalHeight, newRectangles] = optimizedPacking(rectangles, 
     end
 
     totalHeight = currentTotalHeight;  % Return the best found total height
-    positions = packRectangles(currentRectangles, W); % Get the best positions
 end
+
 
 
 
@@ -129,7 +144,7 @@ function [bestX, bestY] = findPosition(width, height, skyline)
     end
 
     if bestX == -1
-        bestX = 0; % Fix the issue by adjusting to a default valid index if no position is found
+        bestX = 0; 
     end
 end
 
