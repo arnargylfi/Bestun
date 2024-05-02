@@ -1,3 +1,4 @@
+clear all, close all, clc
 N = 30; % Number of rectangles
 W = 12; % Width of the bin
 % Generate random widths and heights for each rectangle
@@ -7,41 +8,60 @@ heights = randi([3, 10], N, 1);
 % Initial random order of rectangles
 rectangles = [widths heights];
 
+% Pack the rectangles
+[positions, totalHeight] = packRectangles(rectangles, W);
 
-[positions, totalHeight] = placeRectangles(W, rectangles);
 
+% Plotting the rectangles
 figure;
 hold on;
-%axis([0 W 0 totalHeight]);
-for i = 1:size(rectangles, 1)
-    rectangle('Position', [positions(i,1), positions(i,2), rectangles(i,1), rectangles(i,2)], ...
-              'FaceColor', [rand rand rand]);
+axis([0 W 0 totalHeight]);
+colors = lines(N); % Generate N distinct colors
+
+for i = 1:N
+    rectangle('Position', [positions(i, 1), positions(i, 2), rectangles(i, 1), rectangles(i, 2)], ...
+              'EdgeColor', 'k', 'FaceColor', colors(i,:), 'LineWidth', 2);
 end
-title(sprintf('Initial Packing with Total Height: %d', totalHeight));
+title('Rectangle Placement');
 xlabel('Width');
 ylabel('Height');
 hold off;
 
+function [positions, totalHeight] = packRectangles(rectangles, W)
+    N = size(rectangles, 1);  % Number of rectangles
+    positions = zeros(N, 2);  % Store x, y positions of rectangles
+    skyline = zeros(W, 1);  % Height at each x position of the bin
 
+    for i = 1:N
+        width = rectangles(i, 1);
+        height = rectangles(i, 2);
 
-function [positions, totalHeight] = placeRectangles(W, rectangles)
-    x = 0; % Current x position
-    y = 0; % Current y position
-    rowHeight = 0; % Height of the current row
-    totalHeight = 0;
-    positions = zeros(size(rectangles, 1), 2); % Store positions of rectangles
+        % Find position to place rectangle
+        [bestX, bestY] = findPosition(width, height, skyline);
+        positions(i, :) = [bestX, bestY];
 
-    for i = 1:size(rectangles, 1)
-        if x + rectangles(i, 1) > W
-            % Move to the next row
-            x = 0;
-            %y = rectangles(i,2)
-            y = y + rowHeight;
-            rowHeight = 0;
+        % Update skyline
+        for j = bestX+1:bestX+width
+            skyline(j) = bestY + height;
         end
-        positions(i, :) = [x, y]; % Store position
-        x = x + rectangles(i, 1); % Increment x position
-        rowHeight = max(rowHeight, rectangles(i, 2)); % Adjust row height
     end
-    totalHeight = y + rowHeight; % Calculate total height of packed rectangles
+
+    totalHeight = max(skyline);  % Max height of skyline is total height used
+
+    function [bestX, bestY] = findPosition(width, height, skyline)
+        bestY = inf;
+        bestX = -1;
+
+        % Check each position along the bin width
+        for x = 1:W-width+1
+            % Maximum y at the position
+            maxH = max(skyline(x:x+width-1));
+            if maxH < bestY
+                bestY = maxH;
+                bestX = x - 1;
+            end
+        end
+    end
 end
+
+
