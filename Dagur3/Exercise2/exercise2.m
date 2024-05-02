@@ -147,3 +147,5 @@ function [bestX, bestY] = findPosition(width, height, skyline)
         bestX = 0; 
     end
 end
+
+
