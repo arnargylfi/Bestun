@@ -57,9 +57,9 @@ for i = 1:dalkar
     for j = i+1:dalkar
         dot_product = dot(orthoA(:, i), orthoA(:, j));
         if abs(dot_product) == 0
-            disp(['Vectors ', num2str(i), ' and ', num2str(j), ' are not orthogonal. Dot product: ', num2str(dot_product)]);
-        else
             disp(['Vectors ', num2str(i), ' and ', num2str(j), ' are orthogonal. Dot product: ', num2str(dot_product)]);
+        else
+            disp(['Vectors ', num2str(i), ' and ', num2str(j), ' are not orthogonal. Dot product: ', num2str(dot_product)]);
         end
     end
 end
