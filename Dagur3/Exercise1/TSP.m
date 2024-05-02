@@ -36,9 +36,23 @@
     end
 
 
-ratio = olddist/original_dist;
-disp(['Original distance divided by optimized distance = ', num2str(ratio)]);
-
-
+%%
+subplot(1,2,1)
+for i=1:N-1
+    start_city = i;
+    end_city = i+1;
+    dist = dist+sqrt((cities(start_city,1)-cities(end_city,1))^2+(cities(start_city,2)-cities(end_city,2))^2);
+    line([cities(start_city, 1), cities(end_city, 1)], [cities(start_city, 2), cities(end_city, 2)], 'Color', 'r');
+end
+title(['Initial path, total length = ',num2str(original_dist) ])
+subplot(1,2,2)
+for i=1:length(connections)-1   
+    start_city = connections(i);
+    end_city = connections(i+1);
+    dist = dist+sqrt((cities(start_city,1)-cities(end_city,1))^2+(cities(start_city,2)-cities(end_city,2))^2);
+    line([cities(start_city, 1), cities(end_city, 1)], [cities(start_city, 2), cities(end_city, 2)], 'Color', 'r');
+end
+title(['Optimized path, total length = ',num2str(olddist)])
+sgtitle(['Optimized path path lengthdivided by initial path length =',num2str(olddist/original_dist)])
 
 
