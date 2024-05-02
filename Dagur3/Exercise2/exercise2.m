@@ -9,16 +9,16 @@ heights = randi([1, W], N, 1);
 rectangles = [widths heights];
 
 % Pack the rectangles
-[positions_new, totalHeight_new] = packRectangles(rectangles, W);
+[positions, totalHeight] = packRectangles(rectangles, W);
 
 % Plotting the rectangles
 figure;
 hold on;
-axis([0 W 0 totalHeight_new]);
+axis([0 W 0 totalHeight]);
 colors = lines(N); % Generate N distinct colors
 
 for i = 1:N
-    rectangle('Position', [positions_new(i, 1), positions_new(i, 2), rectangles(i, 1), rectangles(i, 2)], ...
+    rectangle('Position', [positions(i, 1), positions(i, 2), rectangles(i, 1), rectangles(i, 2)], ...
               'EdgeColor', 'k', 'FaceColor', colors(i,:), 'LineWidth', 2);
 end
 title('Rectangle Placement first');
@@ -32,7 +32,7 @@ iterations = 100000;
 
 figure;
 hold on;
-axis([0 W 0 totalHeight_new]);
+axis([0 W 0 totalHeight]);
 colors = lines(N); % Generate N distinct colors
 
 for i = 1:N
