@@ -18,10 +18,10 @@ maxHeight = totalHeight_initial;
 
 % Plotting both packings in subplots
 figure;
-subplot(1, 2, 1); % First subplot
+subplot(1, 2, 1);
 hold on;
 axis([-2 W+2 0 maxHeight]);
-colors = lines(N); % Generate N distinct colors
+colors = lines(N); 
 for i = 1:N
     rectangle('Position', [positions_initial(i, 1), positions_initial(i, 2), rectangles(i, 1), rectangles(i, 2)], ...
               'EdgeColor', 'k', 'FaceColor', colors(i,:), 'LineWidth', 2);
@@ -49,22 +49,21 @@ hold off;
 
 function [positions, totalHeight, currentRectangles] = optimizedPacking(rectangles, W, iterations)
     currentRectangles = rectangles;
-    [positions, currentTotalHeight] = packRectangles(currentRectangles, W);  % Corrected line
+    [positions, currentTotalHeight] = packRectangles(currentRectangles, W);
     firstHeight = currentTotalHeight
-    figure; % Create a new figure for animation
-    colors = lines(size(rectangles, 1)); % Generate distinct colors for each rectangle
+    figure; %figure for animation
+    colors = lines(size(rectangles, 1));
 
     for iter = 1:iterations
-        % Create a new candidate by swapping two rectangles
+        %Swapping
         newRectangles = currentRectangles;
         idx1 = randi(size(newRectangles, 1));
         idx2 = randi(size(newRectangles, 1));
-        % Swap the rectangles
         temp = newRectangles(idx1, :);
         newRectangles(idx1, :) = newRectangles(idx2, :);
         newRectangles(idx2, :) = temp;
 
-        % Randomly flip orientation of one rectangle
+        %Randomly flip orientation
         if rand() > 0.5
             newRectangles(idx1, :) = newRectangles(idx1, [2 1]);
         end
@@ -75,8 +74,8 @@ function [positions, totalHeight, currentRectangles] = optimizedPacking(rectangl
         % Calculate new packing
         [newPositions, newTotalHeight] = packRectangles(newRectangles, W);
 
-        % Update the figure for animation
-        clf; % Clear current figure window
+        %Animation
+        clf;
         hold on;
         axis([-2 W+2 0 firstHeight+5]);
         for i = 1:size(rectangles, 1)
@@ -84,7 +83,7 @@ function [positions, totalHeight, currentRectangles] = optimizedPacking(rectangl
                       'EdgeColor', 'k', 'FaceColor', colors(i,:), 'LineWidth', 2);
         end
         title(['Iteration: ', num2str(iter), ' Height: ', num2str(newTotalHeight)]);
-        drawnow; % Update the figure window
+        drawnow; % Update the figure
         hold off;
 
         % Accept new configuration if it improves or maintains the total height
@@ -95,7 +94,7 @@ function [positions, totalHeight, currentRectangles] = optimizedPacking(rectangl
         end
     end
 
-    totalHeight = currentTotalHeight;  % Return the best found total height
+    totalHeight = currentTotalHeight;
 end
 
 
@@ -104,9 +103,9 @@ end
 
 
 function [positions, totalHeight] = packRectangles(rectangles, W)
-    N = size(rectangles, 1);  % Number of rectangles
-    positions = zeros(N, 2);  % Store x, y positions of rectangles
-    skyline = zeros(W, 1);  % Height at each x position of the bin
+    N = size(rectangles, 1);
+    positions = zeros(N, 2);
+    skyline = zeros(W, 1);
 
     for i = 1:N
         width = rectangles(i, 1);
@@ -125,7 +124,7 @@ function [positions, totalHeight] = packRectangles(rectangles, W)
         end
     end
 
-    totalHeight = max(skyline);  % Max height of skyline is total height used
+    totalHeight = max(skyline);
 end
 
 function [bestX, bestY] = findPosition(width, skyline)
@@ -135,7 +134,6 @@ function [bestX, bestY] = findPosition(width, skyline)
 
     % Check each position along the bin width
     for x = 1:W-width+1
-        % Maximum y at the position
         maxH = max(skyline(x:x+width-1));
         if maxH < bestY
             bestY = maxH;
