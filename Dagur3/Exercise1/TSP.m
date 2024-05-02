@@ -2,11 +2,12 @@
     disp('Ný keyrsla')
     cities = randi([1,100],N,2);
     %%
-    iterations = 1000;
+    iterations = 2500;
     connections = 1:N; % original connections:
     connections = [connections,1]; %circular path
     hold on
     olddist = Inf;
+    distances = zeros(iterations,1);
     for j = 1:iterations
         clf
         dist = 0;
@@ -29,6 +30,7 @@
         else
             olddist = dist;
         end
+        distances(j) = olddist; 
         swapping_indices = randi([2,length(connections)-1],1,2); %swappa öllu nema fyrsta og seinasta staki
         temp = connections(swapping_indices(1));
         connections(swapping_indices(1)) = connections(swapping_indices(2));
@@ -63,5 +65,9 @@ end
 
 title(['Optimized path, total length = ',num2str(olddist)])
 sgtitle(['Optimized path path length divided by initial path length =',num2str(olddist/original_dist)])
-
-
+%%
+hold off
+plot(1:iterations, distances)
+xlabel('Number of iterations')
+ylabel('Path length')
+title('Path length as a function of iterations')
