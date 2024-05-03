@@ -1,15 +1,46 @@
+%% visualising the golden ratio search
 clear all, clc, close all
 
-% Run the animation function
+golden_ratio = (1 + sqrt(5)) / 2;
+x1 = 0;
+x2 = 10;
+tol = 1e-3;
 
+%%%% first function
 f = @(x) (x - 2).^2;
+a = figure;
+set(gcf, 'Position', [360 198 700 420]);
+hold on;
+grid on;
+fplot(f, [0, 10], 'k-') % Plot function
+
+xlabel('x');
+ylabel('f(x)');
+title(sprintf("f(x) = (x-2)^2",'Interpreter','latex','FontSize',12))
+
+% Start the search
+[xmin_1, fmin1, iter1] = golden_ratio_search(f, x1, x2, tol, golden_ratio, true);
+title(sprintf('$f(x) = (x-2)^2$, $(x,f(x))_{\\mathrm{min}} = (%f, %f)$, number of iterations $= %d$', xmin_1, fmin1, iter1),'Interpreter','latex','FontSize',12)
+fprintf('Minimum found at x = %f with f(x) = %f\n', xmin_1, fmin1);
+
+%%%% second function
 f2 = @(x) x.^2+3*exp(-2*x);
+figure;
+set(gcf, 'Position', [360 198 700 420]);
+hold on;
+grid on;
+fplot(f2, [0, 10], 'k-'); % Plot function
+xlabel('x');
+ylabel('f(x)');
+title(sprintf("f(x) = x^2+3e^{-2x}",'Interpreter','latex','FontSize',12))
 
-golden_ratio_search_plot(f);
-golden_ratio_search_plot(f2);
+% Start the search
+[xmin_2, fmin2, iter2] = golden_ratio_search(f2, x1, x2, tol, golden_ratio, true);
+title(sprintf('$f(x) = x^2+3e^{-2x}$, $(x,f(x))_{\\mathrm{min}} = (%f, %f)$, number of iterations $= %d$', xmin_2, fmin2, iter2),'Interpreter','latex','FontSize',12)
+fprintf('Minimum found at x = %f with f(x) = %f\n', xmin_2, fmin2);
 
 
-%% test the ratio
+%% testing the effect of the ratio for fun
 
 f = @(x) (x-2).^2;
 solution = 2;
@@ -57,26 +88,7 @@ legend('Accuracy', 'Min Error Point', 'Corresponding Point for Min Iteration');
 grid on;
 
 
-function golden_ratio_search_plot(f)
-    % Golden ratio value
-    ratio = (1 + sqrt(5)) / 2;
-    x1 = 0;
-    x2 = 10;
-    tol = 1e-3;
-    
-    % Initialize plot
-    figure;
-    hold on;
-    grid on;
-    fplot(f, [0, 10], 'k-'); % Plot function
-    xlabel('x');
-    ylabel('f(x)');
-    title('Golden Ratio Search Visualization');
-
-    % Start the search
-    [xmin, fmin, ~] = golden_ratio_search(f, x1, x2, tol, ratio, true);
-    fprintf('Minimum found at x = %f with f(x) = %f\n', xmin, fmin);
-end
+%% Functions
 
 function [xmin, fmin, iterations] = golden_ratio_search(f, x1, x2, tol, ratio, animate)
     d = (x2 - x1) / ratio;
@@ -89,7 +101,6 @@ function [xmin, fmin, iterations] = golden_ratio_search(f, x1, x2, tol, ratio, a
     iterations = 0;
     
     if animate
-    % Plot initial points
     h1 = plot(x1, f1, 'ro', 'MarkerFaceColor', 'r');
     h2 = plot(x2, f2, 'bo', 'MarkerFaceColor', 'b');
     h3 = plot(x3, f3, 'go', 'MarkerFaceColor', 'g');
@@ -98,7 +109,6 @@ function [xmin, fmin, iterations] = golden_ratio_search(f, x1, x2, tol, ratio, a
 
     while abs(x2 - x1) > tol
         iterations = iterations + 1;
-        % Update points
         if f3 < f4
             x2 = x4;
             f2 = f4;
@@ -121,8 +131,6 @@ function [xmin, fmin, iterations] = golden_ratio_search(f, x1, x2, tol, ratio, a
         drawnow;
         pause(0.2)
         delete([h1, h2, h3, h4]);
-      
-        % Plot updated points
         h1 = plot(x1, f1, 'ro', 'MarkerFaceColor', 'r');
         h2 = plot(x2, f2, 'bo', 'MarkerFaceColor', 'b');
         h3 = plot(x3, f3, 'go', 'MarkerFaceColor', 'g');
