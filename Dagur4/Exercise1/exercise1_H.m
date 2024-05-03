@@ -4,7 +4,7 @@ clear all, clc, close all
 golden_ratio = (1 + sqrt(5)) / 2;
 x1 = 0;
 x2 = 10;
-tol = 1e-3;
+tol = 1e-4;
 
 %%%% first function
 f = @(x) (x - 2).^2;
@@ -47,7 +47,7 @@ solution = 2;
 
 x1 = 0;
 x2 = 10;
-tol = 1e-3;
+tol = 1e-4;
 ratios = 1.35:0.0005:1.7;
 golden_ratio = (1 + sqrt(5)) / 2;
 [~, index] = min(abs(ratios - golden_ratio));
@@ -70,7 +70,7 @@ plot(ratios, iterations, '.-');
 hold on;
 plot(ratios(idx_min_iters), min_iters, 'ko', 'MarkerFaceColor', 'k');
 plot(ratios(idx_min_err), iterations(idx_min_err), 'ro', 'MarkerFaceColor', 'r');
-xlabel('Ratio');
+xlabel('Ratio used in function');
 ylabel('Number of Iterations');
 title('Number of Iterations to find a solution for Different Ratios in Golden Ratio Search');
 legend('Iterations', 'Min Iteration Point', 'Corresponding Point for Min Error');
@@ -81,7 +81,7 @@ plot(ratios, accuracies, '.-');
 hold on;
 plot(ratios(idx_min_err), min_err, 'ro', 'MarkerFaceColor', 'r');
 plot(ratios(idx_min_iters), accuracies(idx_min_iters), 'ko', 'MarkerFaceColor', 'k');
-xlabel('Ratio');
+xlabel('Ratio used in function');
 ylabel('Accuracy (Absolute Error)');
 title('Accuracy of Solutions for Different Ratios in Golden Ratio Search');
 legend('Accuracy', 'Min Error Point', 'Corresponding Point for Min Iteration');
