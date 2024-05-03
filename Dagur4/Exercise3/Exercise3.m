@@ -20,9 +20,9 @@ x_min_1 = Descent(f1, x0_1, 1, 100, 1e-6);
 % Display results
 disp('Results for f1:');
 disp(x_min_1);
-disp('Results for g:');
-disp(x_min_2);
-disp('Results for h:');
-disp(x_min_3);
-disp('Results for Rosenbrock:');
-disp(x_min_4);
+% disp('Results for g:');
+% disp(x_min_2);
+% disp('Results for h:');
+% disp(x_min_3);
+% disp('Results for Rosenbrock:');
+% disp(x_min_4);
