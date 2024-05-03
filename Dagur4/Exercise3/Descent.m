@@ -1,39 +1,10 @@
-close all; clear all ; clc;
-%Test
-% Test functions
-f1 = @(x) sum(x.^2);          % Quadratic function
-g = @(x) sin(x);              % Sin function
-h = @(x) exp(x(1)/5 + x(2)/2) + x(1)^2 + x(2)^2; % Exponential and quadratic
-rosenbrock = @(x) (1-x(1))^2 + 100*(x(2)-x(1)^2)^2; % Rosenbrock function
-
-% Starting points
-x0_1 = (1:10)'; % For f1 with n = 10
-x0_2 = 2;       % For g
-x0_3 = [5; 3];  % For h
-x0_4 = [0; 0];  % For Rosenbrock
-
-% Call the trust region method
-x_min_1 = trust_region_descent(f1, x0_1, 0.001, 100, 1e-8);
-x_min_2 = trust_region_descent(g, x0_2, 0.001, 100, 1e-8);
-x_min_3 = trust_region_descent(h, x0_3, 0.001, 1000, 1e-8);
-x_min_4 = trust_region_descent(rosenbrock, x0_4, 0.001, 1000, 1e-8);
-
-% Display results
-disp('Results for f1:');
-disp(x_min_1);
-disp('Results for g:');
-disp(x_min_2);
-disp('Results for h:');
-disp(x_min_3);
-disp('Results for Rosenbrock:');
-disp(x_min_4);
-
-function x_min = trust_region_descent(f, x, delta, kmax, tol)
+function [x_min, k] = trust_region_descent(f, x, delta, kmax, tol, golden_ratio)
     k = 0;
     found = false;
     h=1e-5;
-    % hvec = min(x):delta:max(x);
-    % x_min_counter;
+    % Initialize a matrix to store x values for plotting
+    x_values = zeros(length(x), kmax);
+
     while ~found && k <= kmax
         k = k + 1;
         
@@ -42,9 +13,15 @@ function x_min = trust_region_descent(f, x, delta, kmax, tol)
             disp('Norm(grad)=0');
         end
 
-        htr = -delta * grad / norm(grad);
-        q = @(h) f(x) + h'*grad;
         
+        q = @(h) f(x) + h'*grad;
+        if golden_ratio
+            [alpha_min, ~, ~] = golden_ratio_search(q, 0, delta*2, 1e-3, ((1 + sqrt(5)) / 2), false);
+            htr = -alpha_min * grad;
+            % golden_ratio = false;
+        else
+           htr = -delta * grad / norm(grad);
+        end
         q0 = q(x);
         qhtr = q(x + htr);
         actual_reduction = f(x) - f(x + htr);
@@ -68,6 +45,9 @@ function x_min = trust_region_descent(f, x, delta, kmax, tol)
             x = x + htr;
         end
         
+        % Store the current x for plotting
+        x_values(:, k) = x;
+
         % Check convergence (norm of the gradient or change in x could be used)
         if norm(grad) < tol || norm(htr) < tol
             found = true;
@@ -75,6 +55,16 @@ function x_min = trust_region_descent(f, x, delta, kmax, tol)
         end
     end
     
+    x_values = x_values(:, 1:k);
+    %Plot
+    figure;
+    plot(1:k, x_values');
+    legend(arrayfun(@(i) sprintf('x(%d)', i), 1:length(x), 'UniformOutput', false));
+    title('Convergence of components of x over iterations');
+    xlabel('Iteration');
+    ylabel('Component values');
+    grid on;
+
     x_min = x;
 end
 
@@ -91,4 +81,61 @@ function grad = finite_diff_gradient(f, x, h)
         grad(i) = (f_plus - f_minus) / (2 * h);
     end
 end
+
+function [xmin, fmin, iterations] = golden_ratio_search(f, x1, x2, tol, ratio, animate)
+    d = (x2 - x1) / ratio;
+    x3 = x2 - d;
+    x4 = x1 + d;
+    f1 = f(x1);
+    f2 = f(x2);
+    f3 = f(x3);
+    f4 = f(x4);
+    iterations = 0;
+    
+    if animate
+    % Plot initial points
+    h1 = plot(x1, f1, 'ro', 'MarkerFaceColor', 'r');
+    h2 = plot(x2, f2, 'bo', 'MarkerFaceColor', 'b');
+    h3 = plot(x3, f3, 'go', 'MarkerFaceColor', 'g');
+    h4 = plot(x4, f4, 'mo', 'MarkerFaceColor', 'm');
+    end
+
+    while abs(x2 - x1) > tol
+        iterations = iterations + 1;
+        % Update points
+        if f3 < f4
+            x2 = x4;
+            f2 = f4;
+            x4 = x3;
+            f4 = f3;
+            d = (x2 - x1) / ratio;
+            x3 = x2 - d;
+            f3 = f(x3);
+        else
+            x1 = x3;
+            f1 = f3;
+            x3 = x4;
+            f3 = f4;
+            d = (x2 - x1) / ratio;
+            x4 = x1 + d;
+            f4 = f(x4);
+        end
+        
+        if animate
+        drawnow;
+        pause(0.2)
+        delete([h1, h2, h3, h4]);
+      
+        % Plot updated points
+        h1 = plot(x1, f1, 'ro', 'MarkerFaceColor', 'r');
+        h2 = plot(x2, f2, 'bo', 'MarkerFaceColor', 'b');
+        h3 = plot(x3, f3, 'go', 'MarkerFaceColor', 'g');
+        h4 = plot(x4, f4, 'mo', 'MarkerFaceColor', 'm');
+        end
+    end
+    xmin = (x1 + x2) / 2;
+    fmin = f(xmin);
+end
+
+
 
