@@ -1,8 +1,8 @@
 function [x_min,func_min] = trustRegion(f,X)
 
 
-delta = 0.005;
-kmax = 10000000;
+delta = 1;
+kmax = 100000;
 k = 0;
 found = false;
 delta_halli = 1e-5;
