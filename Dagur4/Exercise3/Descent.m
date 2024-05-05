@@ -48,7 +48,7 @@ function [x_min, k] = trust_region_descent(f, x, delta, kmax, tol, golden_ratio)
         % Store the current x for plotting
         x_values(:, k) = x;
 
-        % Check convergence (norm of the gradient or change in x could be used)
+        % Check convergence
         if norm(grad) < tol || norm(htr) < tol
             found = true;
             disp('found solution!');

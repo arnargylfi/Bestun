@@ -1,10 +1,10 @@
-close all; clear all;
+close all; clear all; clc;
 %Test
 % Test functions
-f1 = @(x) sum(x.^2);          % Quadratic function
-g = @(x) sin(x);              % Sin function
-h = @(x) exp(x(1)/5 + x(2)/2) + x(1)^2 + x(2)^2; % Exponential and quadratic
-rosenbrock = @(x) (1-x(1))^2 + 100*(x(2)-x(1)^2)^2; % Rosenbrock function
+f1 = @(x) sum(x.^2);
+g = @(x) sin(x);
+h = @(x) exp(x(1)/5 + x(2)/2) + x(1)^2 + x(2)^2;
+rosenbrock = @(x) (1-x(1))^2 + 100*(x(2)-x(1)^2)^2;
 
 % Starting points
 x0_1 = (1:10)'; % For f1 with n = 10
