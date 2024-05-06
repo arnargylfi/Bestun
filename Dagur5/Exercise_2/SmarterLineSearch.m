@@ -1,11 +1,11 @@
-function [xmin, fmin, x_values] = ImprovedPatternSearch(func, bounds, start_point, max_iter, tol)
+function [xmin, fmin, path] = ImprovedPatternSearch(func, bounds, start_point, max_iter, tol)
     x = start_point;
     grid_size = 1.0;
     fmin = func(x(1), x(2));
     xmin = x;
-    x_values = [];
+    path = [];
     improved_cnt = 1;
-    x_values(1,:) = xmin;
+    path(1,:) = xmin;
     for iter = 1:max_iter
         improved = false;
         % Explore neighboring points
@@ -20,7 +20,7 @@ function [xmin, fmin, x_values] = ImprovedPatternSearch(func, bounds, start_poin
                             fmin = fn;
                             improved = true;
                             improved_cnt = improved_cnt + 1;
-                            x_values(improved_cnt,:) = xmin;
+                            path(improved_cnt,:) = xmin;
                             disp('Number of iterations:');
                             disp(iter);
                             disp('Xmin: ');
@@ -44,7 +44,7 @@ function [xmin, fmin, x_values] = ImprovedPatternSearch(func, bounds, start_poin
                         xmin = xn;
                         fmin = fn;
                         improved_cnt = improved_cnt + 1;
-                        x_values(improved_cnt,:) = xmin;
+                        path(improved_cnt,:) = xmin;
                         disp('Number of iterations:');
                         disp(iter);
                         disp('Xmin: ');

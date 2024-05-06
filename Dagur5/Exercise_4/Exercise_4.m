@@ -1,4 +1,4 @@
-clear all; close all; clc;
+clear; close all; clc;
 % Define the functions
 func1 = @(x, y) 2*x.^2 + 3*y.^2 - 3*x*y + x;
 func2 = @(x, y) (1 - x).^2 + 5*(x - y.^2).^2;
@@ -21,27 +21,16 @@ start4 = [5; 8];
 [xmin3, fmin3, path3] = HookeJeeves(func3, bounds3, start3, 100, 0.01);
 [xmin4, fmin4, path4] = HookeJeeves(func4, bounds4, start4, 100, 0.01);
 
-% [X, Y] = meshgrid(linspace(bounds1(1,1), bounds1(1,2), 100), linspace(bounds1(2,1), bounds1(2,2), 100));
-%     Z = arrayfun(func1,X, Y);
-% 
-%     figure;
-%     surf(X, Y, Z, 'EdgeColor', 'none');
-%     alpha 0.8;
-%     hold on;
-% 
-%     z_values = arrayfun(func1, path1);
-%     plot3(path1(:,1), path1(:,2), z_values, 'ro-', 'LineWidth', 2, 'MarkerSize', 5);
-%     z_min = func1(xmin1);
-%     plot3(xmin1(1), xmin1(2), z_min, 'kx', 'MarkerSize', 10, 'LineWidth', 2);
-% 
-%     xlabel('x');
-%     ylabel('y');
-%     zlabel('Function Value');
-%     title('3D Visualization of Search Path');
-%     colorbar;
-%     view(-45, 30); 
 
-plot2D(func1, bounds1, xmin1, path1);
-plot2D(func2, bounds2, xmin2, path2);
-plot2D(func3, bounds3, xmin3, path3);
-plot2D(func4, bounds4, xmin4, path4);
+% plot2D(func1, bounds1, xmin1, path1);
+% plot2D(func2, bounds2, xmin2, path2);
+% plot2D(func3, bounds3, xmin3, path3);
+% plot2D(func4, bounds4, xmin4, path4);
+% plot3D(func1, bounds1, xmin1, path1, [-45, 30]);
+% plot3D(func2, bounds2, xmin2, path2, [125, 60]);
+% plot3D(func3, bounds3, xmin3, path3, [-100, 50]);
+% plot3D(func4, bounds4, xmin4, path4, [-45, 30]);
+plot3DZoom(func1, xmin1, path1, [-45, 30]);
+plot3DZoom(func2, xmin2, path2, [125,60]);
+plot3DZoom(func3, xmin3, path3, [-100, 50]);
+plot3DZoom(func4, xmin4, path4, [-45, 30]);

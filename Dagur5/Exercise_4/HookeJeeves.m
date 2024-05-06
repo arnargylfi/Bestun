@@ -1,10 +1,10 @@
-function [xmin, fmin, x_values] = HookeJeeves(func, bounds, start_point, max_iter, tol)
+function [xmin, fmin, path] = HookeJeeves(func, bounds, start_point, max_iter, tol)
     x = start_point;
     grid_size = 1.0; % Initial grid size
     fmin = func(x(1), x(2));
     xmin = x;
     improved_cnt = 1;
-    x_values(1,:) = xmin;
+    path(1,:) = xmin;
 
     for iter = 1:max_iter
         xn = x;
@@ -16,7 +16,7 @@ function [xmin, fmin, x_values] = HookeJeeves(func, bounds, start_point, max_ite
                 fmin = func(xp(1), xp(2));
                 xn = xp;
                 improved_cnt = improved_cnt + 1;
-                x_values(improved_cnt,:) = xn;
+                path(improved_cnt,:) = xn;
                 disp('Number of iterations:');
                 disp(iter);
                 disp('Xmin: ');
@@ -29,7 +29,7 @@ function [xmin, fmin, x_values] = HookeJeeves(func, bounds, start_point, max_ite
                     fmin = func(xp(1), xp(2));
                     xn = xp;
                     improved_cnt = improved_cnt + 1;
-                    x_values(improved_cnt,:) = xn;
+                    path(improved_cnt,:) = xn;
                     disp('Number of iterations:');
                     disp(iter);
                     disp('Xmin: ');
@@ -49,7 +49,7 @@ function [xmin, fmin, x_values] = HookeJeeves(func, bounds, start_point, max_ite
                     fmin = func(xp(1), xp(2));
                     xn = xp; % Update current point
                     improved_cnt = improved_cnt + 1;
-                    x_values(improved_cnt,:) = xn;
+                    path(improved_cnt,:) = xn;
                     disp('Number of iterations:');
                     disp(iter);
                     disp('Xmin: ');
