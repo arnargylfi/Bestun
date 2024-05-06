@@ -1,9 +1,13 @@
-function history = PatternSearch(X0,func, gridsize,minimum,maximum, tol)
-% [X, Y] = meshgrid(minimum-2:0.1:maximum+2, minimum-2:0.1:maximum+2);
-% Z = func([X(:),Y(:)]);
-% Z = reshape(Z, size(X));
-% contour(X,Y,Z,40)
-% colorbar
+function history = PatternSearch(X0,func, gridsize,minimum,maximum)
+[X, Y] = meshgrid(minimum-2:0.1:maximum+2, minimum-2:0.1:maximum+2);
+Z = func([X(:),Y(:)]);
+Z = reshape(Z, size(X));
+contour(X,Y,Z,40)
+colorbar
+yline(minimum)
+yline(maximum)
+xline(maximum)
+xline(minimum)
 prev_point = X0;
 max_iter = 100;
 % hold on
