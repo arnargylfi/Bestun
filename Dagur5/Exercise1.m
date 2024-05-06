@@ -1,7 +1,14 @@
-f1 = @(x,y) 2*x.^2+3*y.^2-3*x.*y+x;
-x = linspace(-2,10,100);
-y = linspace(-10,8,100);
+func = @(X) 2*X(:,1).^2 + 3*X(:,2).^2 - 3*X(:,1).*X(:,2) + X(:,1);
+x = linspace(-2,8,100);
+y = linspace(-2,8,100);
 [X, Y] = meshgrid(x,y);
- 
-Z = f1(X,Y);
-contour(X, Y, Z,20)
+
+Z = func([X(:), Y(:)]);
+
+Z = reshape(Z, size(X));
+
+
+contour(X, Y, Z, 20);
+xlabel('X');
+ylabel('Y');
+title('Contour Plot of the Vector-Valued Function');
