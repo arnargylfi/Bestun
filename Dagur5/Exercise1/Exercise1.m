@@ -1,16 +1,23 @@
-func = @(X) 2*X(1).^2 + 3*X(2).^2 - 3*X(1).*X(2) + X(1);
-x = linspace(-2,8,100);
-y = linspace(-2,8,100);
-[X, Y] = meshgrid(x,y);
+clear
+f1 = @(X) 2*X(:,1).^2 + 3*X(:,2).^2 - 3*X(:,1).*X(:,2) + X(:,1);
+minimum1 = -2;
+maximum1 = 8;
+P1 = [5,8];
 
-% Evaluating the function at each point of the grid
-Z = func([X(:), Y(:)])
+f2 = @(X) (1-X(:,1)).^2+5*(X(:,1)-X(:,2).^2).^2;
+minimum2 = -0.5;
+maximum2 = 1.5;
+P2 = [-0.5,1.5];
 
-% Reshape the result back to the size of X and Y
-Z = reshape(Z, size(X))
+f3 = @(X) (X(:,1)+2*X(:,2)).*(1-0.9.*exp(-0.3*(X(:,1)-2.5).^2-2*(X(:,2)-3.5).^2)).*(1-0.9*exp(-(X(:,1)-3).^2-(X(:,2)-3).^2));
+minimum3 = 1;
+maximum3 = 5;
+P3 = [4,2];
 
-% Plotting the contour
-contour(X, Y, Z, 20);
-xlabel('X');
-ylabel('Y');
-title('Contour Plot of the Vector-Valued Function');
+f4 = @(X) exp(X(:,1)./5)+exp(X(:,2)./3);
+minimum4 = -10;
+maximum4 = 10;
+P4 = [5,8];
+
+
+PatternSearch(P4,f4,1,minimum4,maximum4)
