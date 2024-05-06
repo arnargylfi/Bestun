@@ -43,6 +43,14 @@ function [xmin, fmin, x_values] = ImprovedPatternSearch(func, bounds, start_poin
                     if fn < fmin
                         xmin = xn;
                         fmin = fn;
+                        improved_cnt = improved_cnt + 1;
+                        x_values(improved_cnt,:) = xmin;
+                        disp('Number of iterations:');
+                        disp(iter);
+                        disp('Xmin: ');
+                        disp(xmin);
+                        disp('Fmin');
+                        disp(fmin);
                     else
                         break;
                     end

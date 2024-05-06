@@ -17,21 +17,7 @@ bounds4 = [-10 10; -10 10];
 [xmin3, fmin3, path3] = SmarterLineSearch(func3, bounds3, [4; 2], 100, 0.001);
 [xmin4, fmin4, path4] = SmarterLineSearch(func4, bounds4, [5; 8], 100, 0.01);
 
-plotSmartSearch(func1, bounds1, xmin1, fmin1, path1);
-plotSmartSearch(func2, bounds2, xmin2, fmin2, path2);
-plotSmartSearch(func3, bounds3, xmin3, fmin3, path3);
-plotSmartSearch(func4, bounds4, xmin4, fmin4, path4);
-
-function plotSmartSearch(func, bounds, xmin, x_values)
-    [X, Y] = meshgrid(linspace(bounds(1,1), bounds(1,2), 100), linspace(bounds(2,1), bounds(2,2), 100));
-    Z = arrayfun(func, X, Y);
-    figure; 
-    contour(X, Y, Z, 50); 
-    hold on;
-    plot(x_values(:,1), x_values(:,2), 'ro-');
-    plot(xmin(1), xmin(2), 'kx', 'MarkerSize', 10, 'LineWidth', 2);
-    xlabel('x'); 
-    ylabel('y'); 
-    title('Search Path on Contour Plot');
-    colorbar;
-end
+plot2D(func1, bounds1, xmin1, path1);
+plot2D(func2, bounds2, xmin2, path2);
+plot2D(func3, bounds3, xmin3, path3);
+plot2D(func4, bounds4, xmin4, path4);
