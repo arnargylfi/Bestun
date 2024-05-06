@@ -4,6 +4,10 @@ Z = func([X(:),Y(:)]);
 Z = reshape(Z, size(X));
 contour(X,Y,Z,40)
 colorbar
+yline(minimum)
+yline(maximum)
+xline(maximum)
+xline(minimum)
 prev_point = X0;
 max_iter = 100;
 hold on
