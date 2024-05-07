@@ -71,4 +71,12 @@ function [xmin, fmin, path] = ImprovedPatternSearch(func, bounds, start_point, m
             end
         end
     end
+    disp('Total number of iterations:');
+    disp(iter);
+    disp('Total number of improvements:');
+    disp(improved_cnt);
+    disp('Final Xmin: ');
+    disp(xmin);
+    disp('Final Fmin');
+    disp(fmin);
 end

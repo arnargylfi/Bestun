@@ -16,9 +16,9 @@ start3 = [4; 2];
 start4 = [5; 8];
 
 % Run Hooke-Jeeves algorithm
-[xmin1, fmin1, path1] = HookeJeeves(func1, bounds1, start1, 100, 0.01);
-[xmin2, fmin2, path2] = HookeJeeves(func2, bounds2, start2, 100, 0.01);
-[xmin3, fmin3, path3] = HookeJeeves(func3, bounds3, start3, 100, 0.01);
+% [xmin1, fmin1, path1] = HookeJeeves(func1, bounds1, start1, 100, 0.01);
+% [xmin2, fmin2, path2] = HookeJeeves(func2, bounds2, start2, 100, 0.01);
+% [xmin3, fmin3, path3] = HookeJeeves(func3, bounds3, start3, 100, 0.01);
 [xmin4, fmin4, path4] = HookeJeeves(func4, bounds4, start4, 100, 0.01);
 
 
@@ -30,7 +30,7 @@ start4 = [5; 8];
 % plot3D(func2, bounds2, xmin2, path2, [125, 60]);
 % plot3D(func3, bounds3, xmin3, path3, [-100, 50]);
 % plot3D(func4, bounds4, xmin4, path4, [-45, 30]);
-plot3DZoom(func1, xmin1, path1, [-45, 30]);
-plot3DZoom(func2, xmin2, path2, [125,60]);
-plot3DZoom(func3, xmin3, path3, [-100, 50]);
-plot3DZoom(func4, xmin4, path4, [-45, 30]);
+% plot3DZoom(func1, xmin1, path1, [-45, 30]);
+% plot3DZoom(func2, xmin2, path2, [125,60]);
+% plot3DZoom(func3, xmin3, path3, [-100, 50]);
+% plot3DZoom(func4, xmin4, path4, [-45, 30]);

@@ -11,7 +11,7 @@ function [xmin, fmin, path] = HookeJeeves(func, bounds, start_point, max_iter, t
         % Explore along each dimension
         for d = 1:length(x)
             xp = xn;
-            xp(d) = xp(d) + grid_size; % Move up in dimension d
+            xp(d) = xp(d) + grid_size;  % Move down in dimension d
             if xp(d) <= bounds(d,2) && func(xp(1), xp(2)) < fmin
                 fmin = func(xp(1), xp(2));
                 xn = xp;
@@ -70,4 +70,12 @@ function [xmin, fmin, path] = HookeJeeves(func, bounds, start_point, max_iter, t
         end
     end
     xmin = xn;
+    disp('Total number of iterations:');
+    disp(iter);
+    disp('Total number of improvements:');
+    disp(improved_cnt);
+    disp('Final Xmin: ');
+    disp(xmin);
+    disp('Final Fmin');
+    disp(fmin);
 end

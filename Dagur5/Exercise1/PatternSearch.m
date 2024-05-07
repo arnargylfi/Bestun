@@ -10,13 +10,13 @@ xline(maximum)
 xline(minimum)
 prev_point = X0;
 max_iter = 100;
-hold on
+% hold on
 history = [];
     for i = 1:max_iter
         snapped_point = gridsize * round(X0 / gridsize);
-        plot([prev_point(1), X0(1)], [prev_point(2), X0(2)], 'b.-');
+        % plot([prev_point(1), X0(1)], [prev_point(2), X0(2)], 'b.-');
         
-        pause(0.5)
+        % pause(0.5)
         prev_point = X0;
         U = func(snapped_point);
         history=[history;X0(1),X0(2),U];
@@ -42,6 +42,9 @@ history = [];
             X0 = trial_points(min_index,:);
         else
             gridsize = gridsize/3;
+        end
+        if gridsize < tol
+                break;
         end
     end
 end
