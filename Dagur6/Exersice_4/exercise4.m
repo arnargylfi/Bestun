@@ -1,8 +1,8 @@
 clear all, close all, clc
 
 n_values = [3, 5, 10, 20];
-options = optimoptions('fmincon', 'Display', 'iter', 'Algorithm', 'sqp');
-fig = figure
+options = optimset('Display','iter','TolX',1e-8,'TolFun',1e-8,'Algorithm', 'sqp');
+fig = figure;
 for i = 1:length(n_values)
     n = n_values(i);
     x0 = ones(1, n)./ n; % Initial guess
