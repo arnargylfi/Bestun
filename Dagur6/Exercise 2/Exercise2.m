@@ -1,3 +1,4 @@
+clear all; close all; clc;
 f = @(X) exp(sum(X./(1:length(X))));
 
 options = optimset('Display','iter','TolX',1e-8,'TolFun',1e-8);

@@ -1,4 +1,5 @@
 %Exercise 3
+clear all; close all; clc;
 g = @(x0,t) x0(1)*exp(-x0(2)*t)+x0(3)*exp(-x0(4)*t);
 lb = [0 0 0 0];
 ub = [10 10 10 10];
@@ -17,7 +18,7 @@ t = data(:,1);
 y = data(:,2);
 residuals = @(x0) g(x0, t) - y;
 y_initial = g(x0,t);
-options = optimoptions('lsqnonlin', 'Display', 'iter');
+options = optimset('Display', 'iter', 'TolX', 1e-8, 'TolFun', 1e-8);
 [x_opt, resnorm] = lsqnonlin(residuals, x0,lb,ub, options);
 y_optimized = g(x_opt, t);
 
