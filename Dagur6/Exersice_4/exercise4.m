@@ -1,9 +1,8 @@
 clear all, close all, clc
 
 n_values = [3, 5, 10, 20];
-figure
 options = optimoptions('fmincon', 'Display', 'iter', 'Algorithm', 'sqp');
-
+fig = figure
 for i = 1:length(n_values)
     n = n_values(i);
     x0 = ones(1, n)./ n; % Initial guess
@@ -25,8 +24,8 @@ for i = 1:length(n_values)
     stem(1:n, x_opt, 'filled', 'Marker', 's', 'Color', 'r'); % Optimized arguments in red
     grid on
     title(['Arguments for n = ', num2str(n)]);
-    xlabel('Index');
-    ylabel('Argument Value');
+    %xlabel('Index');
+    %ylabel('Argument Value');
     legend('Initial', 'Optimized', 'location', 'northwest');
     hold off;
 
@@ -37,8 +36,15 @@ for i = 1:length(n_values)
     stem(1:n, black_box(x_opt), 'filled', 'Marker', 's', 'Color', 'r'); % Optimized values in red
     grid on
     title(['Values for n = ', num2str(n)]);
-    xlabel('Index');
-    ylabel('Function Value');
+    %xlabel('Index');
+    %ylabel('Function Value');
     legend('Initial', 'Optimized', 'location', 'northeast');
-    hold off;
 end
+
+han=axes(fig,'visible','off'); 
+han.Title.Visible='on';
+han.XLabel.Visible='on';
+han.YLabel.Visible='on';
+ylabel(han,'Function Values');
+xlabel(han,'Indices');
+hold off;
