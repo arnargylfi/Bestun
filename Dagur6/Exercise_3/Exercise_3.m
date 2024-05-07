@@ -1,0 +1,33 @@
+%Exercise 3
+g = @(x0,t) x0(1)*exp(-x0(2)*t)+x0(3)*exp(-x0(4)*t);
+lb = [0 0 0 0];
+ub = [10 10 10 10];
+x0 = [1 1 1 1];
+data = [1   2.3743;
+        2   1.1497;
+        3   0.7317;
+        4   0.5556;
+        5   0.4675;
+        6   0.4157;
+        7   0.3807;
+        8   0.3546;
+        9   0.3337;
+        10  0.3164];
+t = data(:,1);
+y = data(:,2);
+residuals = @(x0) g(x0, t) - y;
+y_initial = g(x0,t);
+options = optimoptions('lsqnonlin', 'Display', 'iter');
+[x_opt, resnorm] = lsqnonlin(residuals, x0,lb,ub, options);
+y_optimized = g(x_opt, t);
+
+figure;
+hold on;
+scatter(t, y, 'kx', 'DisplayName', 'Data');
+scatter(t, y_optimized, 'ro', 'LineWidth', 1, 'DisplayName', 'Approximation function (optimized)');
+scatter(t, y_initial, 'bo', 'LineWidth', 1, 'DisplayName', 'Approximation function (initial)');
+grid on;
+xlabel('Time (t)');
+ylabel('Function value g(t)');
+title('Fit of the Model to Data');
+legend show;
