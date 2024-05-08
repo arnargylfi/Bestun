@@ -1,11 +1,5 @@
-function [g,fbest] = ParticleSwarm(func,SwarmSize,c1,dimension,range,maxIteration,xcorrect)
-if nargin <7
-    xcorrect =0;
-end
-
+function [g,fbest] = ParticleSwarm(func,SwarmSize,c1,dimension,range,maxIteration)
 c2 = 4.1-c1;
-phi = c1+c2;
-chi = 2 / abs(2 - phi - sqrt(phi^2 - 4*phi));
 
 x = (range(2) - range(1)) * rand(SwarmSize,dimension) + range(1);  
 func_evaluationsold = arrayfun(@(i) func(x(i,:)),1:SwarmSize);
@@ -31,8 +25,10 @@ if dimension == 2
     swarm = scatter(x(:, 1), x(:, 2), 50, 'x', 'r');
 end
 
-
+chimax = 1;
+chimin = 0.4;
 while iter <=maxIteration
+    chi = chimax -(chimax-chimin)*iter/maxIteration; %comment inn eða út
     r1 = rand(SwarmSize,dimension);
     r2 = rand(SwarmSize,dimension);
     v = chi*(v+c1*r1.*(xbest-x)+c2*r2.*(g-x));
@@ -60,11 +56,7 @@ while iter <=maxIteration
         best = scatter(xbest(1, 1), xbest(1, 2), 130, 'o','Color',"#EDB120",'LineWidth',2.2);
         pause(0.05)
     end
-    if nargin == 7
-        fprintf('Iteration: %d, function evaluations: %d xbest: %s, fbest: %f, max(xbest/xcorrect) = %f\n',iter,evaluation_num,mat2str(g),fbest,max(g./xcorrect))
-    else
-        fprintf('Iteration: %d, function evaluations: %d xbest: %s, fbest: %f\n,',iter,evaluation_num,mat2str(g),fbest)
-    end
+    fprintf('Iteration: %d, function evaluations: %d xbest: %s, fbest: %f\n',iter,evaluation_num,mat2str(g),fbest)
     iter = iter+1;
 end
 end
