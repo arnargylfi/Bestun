@@ -1,4 +1,4 @@
-function [xbest, fbest, history, all_points, all_values] = randomSearch(f, n, bounds, kmax)
+function [xbest, fbest, all_points] = randomSearch(f, n, bounds, kmax)
     fbest = Inf;
     xbest = [];
     history = zeros(kmax, 1);
