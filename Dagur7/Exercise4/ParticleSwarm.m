@@ -9,6 +9,7 @@ max_velocity = (range(2)-range(1))/5;
 min_velocity = -max_velocity;
 v = (max_velocity - min_velocity) * rand(SwarmSize,1) + min_velocity;
 iter = 0;
+evaluation_num = 0;
 if dimension == 2
     xplot = linspace(range(1), range(2), 400);
     yplot = linspace(range(1), range(2), 400);
@@ -37,7 +38,8 @@ while iter <=maxIteration
     end
     func_evaluations = arrayfun(@(i) func(x(i,:)),1:SwarmSize);
     [fbestnew,gnew] = min(func_evaluations);
-    xbest_index = arrayfun(@(i) func(x(i,:)),1:SwarmSize)<arrayfun(@(i) func(xbest(i,:)),1:SwarmSize); %update local best
+    xbest_index = func_evaluations<arrayfun(@(i) func(xbest(i,:)),1:SwarmSize); %update local best
+    evaluation_num = evaluation_num + 2*SwarmSize;
     xbest_index = repmat(xbest_index,dimension,1);
     xbest = ~xbest_index'.*xbest+xbest_index'.*x;
     if fbestnew < fbest
@@ -49,7 +51,7 @@ while iter <=maxIteration
         best = scatter(xbest(1, 1), xbest(1, 2), 130, 'o','Color',"#EDB120",'LineWidth',2.2);
         pause(0.1)
     end
-    fprintf('Iteration: %d, xbest: %s, fbest: %f\n',iter,mat2str(g),fbest)
+    fprintf('Iteration: %d, function evaluations: %d xbest: %s, fbest: %f\n',iter,evaluation_num,mat2str(g),fbest)
     iter = iter+1;
 end
 end

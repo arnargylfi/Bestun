@@ -12,7 +12,7 @@ range = [-2,2];
 [xbestp1,fbestp1] = ParticleSwarm(fp,20,chi,c1,1,[-2,2],40)
 %%
 
-[xbestp2,fbestp2] = ParticleSwarm(fp,20,chi,c1,2,[-2,2],1000)
+[xbestp2,fbestp2] = ParticleSwarm(fp,10,chi,c1,2,[-2,2],300)
 %%
 [xbesta1,fbesta1] = ParticleSwarm(fa,20,chi,c1,1,[-10,10],40)
 
