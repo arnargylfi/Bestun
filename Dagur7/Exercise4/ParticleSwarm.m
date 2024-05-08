@@ -1,8 +1,8 @@
 function [g,fbest] = ParticleSwarm(func,SwarmSize,chi,c1,dimension,range,maxIteration)
 c2 = 4.1-c1;
 x = (range(2) - range(1)) * rand(SwarmSize,dimension) + range(1);  
-func_evaluations = arrayfun(@(i) func(x(i,:)),1:SwarmSize);
-[fbest,g] = min(func_evaluations); %global best
+func_evaluationsold = arrayfun(@(i) func(x(i,:)),1:SwarmSize);
+[fbest,g] = min(func_evaluationsold); %global best
 g = x(g,:);
 xbest = x; %initial local best
 max_velocity = (range(2)-range(1))/5;
@@ -38,10 +38,12 @@ while iter <=maxIteration
     end
     func_evaluations = arrayfun(@(i) func(x(i,:)),1:SwarmSize);
     [fbestnew,gnew] = min(func_evaluations);
-    xbest_index = func_evaluations<arrayfun(@(i) func(xbest(i,:)),1:SwarmSize); %update local best
-    evaluation_num = evaluation_num + 2*SwarmSize;
+    xbest_index = func_evaluations<func_evaluationsold; %update local best
+    func_evaluationsold = ~xbest_index.*func_evaluationsold+xbest_index.*func_evaluations;
+    evaluation_num = evaluation_num + SwarmSize;
     xbest_index = repmat(xbest_index,dimension,1);
     xbest = ~xbest_index'.*xbest+xbest_index'.*x;
+
     if fbestnew < fbest
         fbest = fbestnew;
         g = x(gnew,:);
@@ -49,7 +51,7 @@ while iter <=maxIteration
     if dimension == 2
         set(best,'Visible','Off')
         best = scatter(xbest(1, 1), xbest(1, 2), 130, 'o','Color',"#EDB120",'LineWidth',2.2);
-        pause(0.1)
+        pause(0.05)
     end
     fprintf('Iteration: %d, function evaluations: %d xbest: %s, fbest: %f\n',iter,evaluation_num,mat2str(g),fbest)
     iter = iter+1;
