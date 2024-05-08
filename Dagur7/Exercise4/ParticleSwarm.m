@@ -32,8 +32,8 @@ while iter <maxIteration
     x(x < range(1)) = range(1);
     x(x > range(2)) = range(2); %to remove out of bounds x
     if dimension ==2
-        set(swarm,'MarkerEdgeColor','blue','SizeData',20)
-        swarm = scatter(x(:, 1), x(:, 2), 50, 'x', 'r','LineWidth',1.5);
+        set(swarm,'MarkerEdgeColor','blue','SizeData',10)
+        swarm = scatter(x(:, 1), x(:, 2), 80, 'x', 'r','LineWidth',1.2);
     end
     func_evaluations = arrayfun(@(i) func(x(i,:)),1:SwarmSize);
     [fbestnew,gnew] = min(func_evaluations);
@@ -47,7 +47,7 @@ while iter <maxIteration
     end
     if dimension == 2
         set(best,'Visible','Off')
-        best = scatter(xbest(1, 1), xbest(1, 2), 130, 'o','Color',"#EDB120",'LineWidth',3);
+        best = scatter(xbest(1, 1), xbest(1, 2), 130, 'o','Color',"#EDB120",'LineWidth',2.2);
         pause(0.1)
     end
 end
