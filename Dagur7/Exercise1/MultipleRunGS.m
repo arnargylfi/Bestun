@@ -13,7 +13,7 @@ if n == 2
     colorbar
     hold on;
 end
-
+best = scatter([0,0], [0,0], 1, 'o','Color',"#EDB120");
 while k < max_points
     xnew = (range(2) - range(1)) * rand(1,n) + range(1);
     if n == 2
@@ -21,7 +21,7 @@ while k < max_points
     end
     [xnew,fnew] = perform_gradient_search(xnew,f);
     if n ==2
-        scatter(xnew(1, 1), xnew(1, 2), 20, 'x', 'r');
+        scatter(xnew(1, 1), xnew(1, 2), 50, 'x', 'r');
     end
     if fnew < fbest
         xbest = xnew;
@@ -29,9 +29,9 @@ while k < max_points
     end
     k = k+1;
     if n == 2
+        set(best,'Visible','Off')
         best = scatter(xbest(1, 1), xbest(1, 2), 100, 'o','Color',"#EDB120");
         pause(0.1)
-        set(best,'Visible','Off')
     end
     fprintf('Iter: %d, x = %s, f(x) = %f\n',k,mat2str(xbest),fbest)
 end

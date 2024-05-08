@@ -3,7 +3,7 @@ fp = @(x) -exp(-norm(x)^2/2) * prod(cos(10*x));
 fa = @(x) -20 * exp(-0.2 * sqrt(mean(x.^2))) - exp(mean(cos(2*pi*x))) + 21; % auckley
 
 
-[xbestr,fbestr] = MultipleRunGS(fr,[-2,2],2,40)
+[xbestr,fbestr] = MultipleRunGS(fr,[-2,2],2,200)
 %%
 
 [xbestp1,fbestp1] = MultipleRunGS(fp,[-2,2],1,40)
