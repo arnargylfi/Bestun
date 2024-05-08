@@ -1,5 +1,8 @@
-function [g,fbest] = ParticleSwarm(func,SwarmSize,chi,c1,dimension,range,maxIteration)
+function [g,fbest] = ParticleSwarm(func,SwarmSize,c1,dimension,range,maxIteration)
 c2 = 4.1-c1;
+phi = c1+c2;
+chi = 2 / abs(2 - phi - sqrt(phi^2 - 4*phi));
+
 x = (range(2) - range(1)) * rand(SwarmSize,dimension) + range(1);  
 func_evaluationsold = arrayfun(@(i) func(x(i,:)),1:SwarmSize);
 [fbest,g] = min(func_evaluationsold); %global best
