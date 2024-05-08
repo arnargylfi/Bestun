@@ -13,7 +13,7 @@ fa_bounds = [-10 10];
 fa_solution = -1.7183; % global minimum at [0 0]'
 
 n = 2
-n_runs = 100;
+n_runs = 20;
 kmax = 1000
 
 
