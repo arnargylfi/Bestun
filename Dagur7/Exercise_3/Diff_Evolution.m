@@ -1,4 +1,4 @@
-function [history, costs] = Diff_Evolution(fun, n, bounds, F, CR, maxGens)
+function [history,fbest,xbest] = Diff_Evolution(fun, n, bounds, F, CR, maxGens)
     N = 50;
     lb = bounds(1);
     ub = bounds(2);
@@ -38,7 +38,7 @@ function [history, costs] = Diff_Evolution(fun, n, bounds, F, CR, maxGens)
         current = mean(costs(gen, :));
 
         %Check for convergence
-        if abs(last - current) < 1e-6
+        if abs(last - current) < 1e-10
             break;
         end
         last = current;
@@ -46,8 +46,10 @@ function [history, costs] = Diff_Evolution(fun, n, bounds, F, CR, maxGens)
 
     history = history(1:gen, :, :);
     costs = costs(1:gen, :);
-
-    % bestValues = min(costs, [], 2);
+     % Find the best solution in the final population
+    [fbest, idx] = min(costs(gen, :));  % Min value and its index
+    xbest = pop(idx, :);  % Best individual coordinates
+    fbest = min(min(costs, [], 2));
     % worstValues = max(costs, [], 2);
     % avgValues = mean(costs, 2);
     % stdValues = std(costs, 0, 2);
@@ -57,5 +59,5 @@ function [history, costs] = Diff_Evolution(fun, n, bounds, F, CR, maxGens)
     % fprintf('Worst Value: %.5f\n', max(worstValues));
     % fprintf('Average Value: %.5f\n', mean(avgValues));
     % fprintf('Std of Values: %.5f\n', mean(stdValues));
-    fprintf('Stopped at generation %.d\n',gen);
+    % fprintf('Stopped at generation %.d\n',gen);
 end
