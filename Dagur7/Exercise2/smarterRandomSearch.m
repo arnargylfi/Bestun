@@ -1,4 +1,4 @@
-function [xbest, fbest, history, all_points, all_values] = smarterRandomSearch(f, n, bounds, kmax)
+function [xbest, fbest, all_points] = smarterRandomSearch(f, n, bounds, kmax)
     % Initialize
     xbest = bounds(1) + (bounds(2) - bounds(1)) * rand(1, n);
     fbest = f(xbest);

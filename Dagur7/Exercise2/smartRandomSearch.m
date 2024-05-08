@@ -1,4 +1,4 @@
-function [xbest, fbest, history, all_points, all_values] = smartRandomSearch(f, n, bounds, kmax)
+function [xbest, fbest, all_points] = smartRandomSearch(f, n, bounds, kmax)
     xbest = bounds(1) + (bounds(2) - bounds(1)) * rand(1, n); % generate random point
     fbest = f(xbest);
     history = zeros(kmax, 1);

@@ -16,8 +16,8 @@ fa_solution = -1.7183; % global minimum at [0 0]'
 n = 2; % Dimensionality of the problem
 kmax = 1000; % Number of iterations
 
-% Execute random search
-[xbest, fbest, history, all_points, all_values] = smartRandomSearch(fr, n, fr_bounds, kmax);
+% animating search for all functions
+[xbest, fbest, all_points] = smartRandomSearch(fr, n, fr_bounds, kmax);
 disp('Rosenbrock')
 fbest, xbest
 plotAnimation(fr, all_points, fr_bounds, kmax);
@@ -25,8 +25,8 @@ title('Rosenbrock')
 hold on
 plot(xbest(1),xbest(2),'kx','linewidth',2)
 hold off
-
-[xbest, fbest, history, all_points, all_values] = smartRandomSearch(fp, n, fp_bounds, kmax);
+%
+[xbest, fbest, all_points] = smartRandomSearch(fp, n, fp_bounds, kmax);
 disp('fp')
 fbest, xbest
 plotAnimation(fp, all_points, fp_bounds, kmax);
@@ -35,7 +35,7 @@ hold on
 plot(xbest(1),xbest(2),'kx','linewidth',2)
 hold off
 %
-[xbest, fbest, history, all_points, all_values] = smartRandomSearch(fa, n, fa_bounds, kmax);
+[xbest, fbest, all_points] = smartRandomSearch(fa, n, fa_bounds, kmax);
 disp('Auckley')
 fbest, xbest
 plotAnimation(fa, all_points, fa_bounds, kmax);
