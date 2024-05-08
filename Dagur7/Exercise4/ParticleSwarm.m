@@ -24,7 +24,7 @@ if dimension == 2
 end
 
 
-while iter <maxIteration
+while iter <=maxIteration
     r1 = rand(SwarmSize,dimension);
     r2 = rand(SwarmSize,dimension);
     v = chi*(v+c1*r1.*(xbest-x)+c2*r2.*(g-x));
@@ -40,7 +40,6 @@ while iter <maxIteration
     xbest_index = arrayfun(@(i) func(x(i,:)),1:SwarmSize)<arrayfun(@(i) func(xbest(i,:)),1:SwarmSize); %update local best
     xbest_index = repmat(xbest_index,dimension,1);
     xbest = ~xbest_index'.*xbest+xbest_index'.*x;
-    iter = iter+1;
     if fbestnew < fbest
         fbest = fbestnew;
         g = x(gnew,:);
@@ -50,6 +49,8 @@ while iter <maxIteration
         best = scatter(xbest(1, 1), xbest(1, 2), 130, 'o','Color',"#EDB120",'LineWidth',2.2);
         pause(0.1)
     end
+    fprintf('Iteration: %d, xbest: %s, fbest: %f\n',iter,mat2str(g),fbest)
+    iter = iter+1;
 end
 end
 

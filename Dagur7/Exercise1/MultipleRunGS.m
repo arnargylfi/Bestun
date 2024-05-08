@@ -12,8 +12,8 @@ if n == 2
     contour(X, Y, Z, 20);
     colorbar
     hold on;
+    best = scatter([0,0], [0,0], 1, 'o','Color',"#EDB120");
 end
-best = scatter([0,0], [0,0], 1, 'o','Color',"#EDB120");
 while k < max_points
     xnew = (range(2) - range(1)) * rand(1,n) + range(1);
     if n == 2
