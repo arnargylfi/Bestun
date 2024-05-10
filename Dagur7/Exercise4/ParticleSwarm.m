@@ -58,10 +58,16 @@ while iter <=maxIteration
     if dimension == 2
         set(best,'Visible','Off')
         best = scatter(xbest(1, 1), xbest(1, 2), 130, 'o','Color',"#EDB120",'LineWidth',2.2);
-        pause(0.05)
+        pause(0.1)
     end
     if nargin == 7
-        fprintf('Iteration: %d, function evaluations: %d xbest: %s, fbest: %f, max(xbest/xcorrect) = %f\n',iter,evaluation_num,mat2str(g),fbest,max(g./xcorrect))
+        error = max(abs(g - xcorrect));
+    if xcorrect == 0
+        fprintf('Iteration: %d, function evaluations: %d xbest: %s, fbest: %f, error = %f\n', iter, evaluation_num, mat2str(g), fbest,error)
+    else
+        fprintf('Iteration: %d, function evaluations: %d xbest: %s, fbest: %f, error = %f%%\n', iter, evaluation_num, mat2str(g), fbest, max(abs((g - xcorrect)./(xcorrect))) * 100)
+    end
+
     else
         fprintf('Iteration: %d, function evaluations: %d xbest: %s, fbest: %f\n,',iter,evaluation_num,mat2str(g),fbest)
     end
