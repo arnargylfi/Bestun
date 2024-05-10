@@ -1,12 +1,6 @@
-N = 20;
-generations = 100;
-pc = 0.7;
-pm = 0.2;
-mutation_adjust_period = 20;
-[pop, d, route] = tsp_evolutionary_algorithm(N,generations, pc, pm, mutation_adjust_period,1);
-function [population, best_distance, best_route] = tsp_evolutionary_algorithm(N, generations, pc, pm, mutation_adjust_period, crossover)
+function [population, best_distance, best_route] = tsp_evolutionary_algorithm(N, generations, pc, pm, mutation_adjust_period, crossover, animate)
     pop_size = N;
-    
+    hold on
     city_locs = rand(N, 2) * 100;
     dist_matrix = create_distance_matrix(city_locs);
     
@@ -28,6 +22,10 @@ function [population, best_distance, best_route] = tsp_evolutionary_algorithm(N,
         if sorted_fitness(1) < best_distance
             best_distance = sorted_fitness(1);
             best_route = population{indices(1)};
+            if animate
+                visualize_route(city_locs, best_route, gen, N);
+                pause(0.1); % Pause for a brief moment to allow visualization to be seen
+            end
         end
         best_distances(gen) = best_distance;
         
@@ -67,28 +65,27 @@ function [population, best_distance, best_route] = tsp_evolutionary_algorithm(N,
         if mod(gen, mutation_adjust_period) == 0
             pm = adjust_mutation_rate(pm, new_population);
         end
-        
         population = new_population;
-        disp(['Generation ', num2str(gen), ': Best Distance = ', num2str(best_distance), ', Average Fitness = ', num2str(average_fitness(gen))]);
-    
+        % disp(['Generation ', num2str(gen), ': Best Distance = ', num2str(best_distance), ', Average Fitness = ', num2str(average_fitness(gen))]);
+        % 
     end
-    
-    visualize_route(city_locs, best_route);
-    
-    %Plotting convergence for debugging and to monitor if changes are
-    %benefitial
-    figure;
-    subplot(2,1,1);
-    plot(best_distances);
-    title('Best Fitness over Generations');
-    xlabel('Generation');
-    ylabel('Best Fitness (Distance)');
-    
-    subplot(2,1,2);
-    plot(average_fitness);
-    title('Average Fitness over Generations');
-    xlabel('Generation');
-    ylabel('Fitness (Distance)');
+    disp(['Generation ', num2str(gen), ': Best Distance = ', num2str(best_distance), ', Average Fitness = ', num2str(average_fitness(gen))]);
+    if animate        
+        %Plotting convergence for debugging and to monitor if changes are
+        %benefitial
+        figure;
+        subplot(2,1,1);
+        plot(best_distances);
+        title('Best Distance over Generations, best distance overall: ',best_distance);
+        xlabel('Generation');
+        ylabel('Best Distance');
+        
+        subplot(2,1,2);
+        plot(average_fitness);
+        title('Average Fitness over Generations');
+        xlabel('Generation');
+        ylabel('Fitness (Distance)');
+    end
 end
 
 function len = path_length(route, dist_matrix)
@@ -196,27 +193,29 @@ end
 
 function [child1, child2] = crossover2(parent1, parent2, pc)
     n = length(parent1);
-    num_swaps = floor(pc * n / 5);
-
-    % Generate random indices for the elements to be swapped
-    swap_indices = randperm(n, num_swaps);
+    num_swaps = randi(floor(n/2));
 
     child1 = zeros(1, n);
     child2 = zeros(1, n);
 
     % Place the selected elements from each parent into the corresponding positions in the children
-    child1(swap_indices) = parent2(swap_indices);
-    child2(swap_indices) = parent1(swap_indices);
+    child1(1:num_swaps) = parent1(1:num_swaps);
+    child2(1:num_swaps) = parent2(1:num_swaps);
 
-    % Fill in the remaining positions in child1 with the remaining values from parent1
-    remaining_indices = setdiff(1:n, swap_indices);
-    remaining_values_child1 = setdiff(parent1, child1(swap_indices), 'stable');
+    % Remaining indices start from num_swaps+1 to n
+    remaining_indices = (num_swaps + 1):n;
+
+    % Fill in the remaining positions in child1 with the remaining values from parent2
+    % Using setdiff to find values in parent2 not yet in child1, preserving order
+    remaining_values_child1 = setdiff(parent2, child1(1:num_swaps), 'stable');
     child1(remaining_indices) = remaining_values_child1;
 
-    % Fill in the remaining positions in child2 with the remaining values from parent2
-    remaining_values_child2 = setdiff(parent2, child2(swap_indices), 'stable');
+    % Fill in the remaining positions in child2 with the remaining values from parent1
+    % Using setdiff to find values in parent1 not yet in child2, preserving order
+    remaining_values_child2 = setdiff(parent1, child2(1:num_swaps), 'stable');
     child2(remaining_indices) = remaining_values_child2;
 end
+
 
 
 function route = mutate(route)
@@ -257,13 +256,13 @@ function mating_pool = tournament_selection(population, fitness, tournament_size
     end
 end
 
-
-function visualize_route(locs, route)
-    plot(locs(route, 1), locs(route, 2), 'o-');
+function visualize_route(locs, route, gen, N)
+    clf; % Clear the current figure
     hold on;
+    plot(locs(route, 1), locs(route, 2), 'o-');
     plot([locs(route(end), 1) locs(route(1), 1)], [locs(route(end), 2) locs(route(1), 2)], 'ro-');
-    title('Best Route Found');
+    title(sprintf('Best Route Found for N=%d, Generation: %d', N, gen));
     xlabel('X Coordinate');
     ylabel('Y Coordinate');
-    hold off;
+    drawnow; % Force MATLAB to draw the updated plot
 end
