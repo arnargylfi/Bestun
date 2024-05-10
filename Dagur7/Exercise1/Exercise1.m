@@ -8,7 +8,6 @@ fa = @(x) -20 * exp(-0.2 * sqrt(mean(x.^2))) - exp(mean(cos(2*pi*x))) + 21; % au
 
 [xbestp1,fbestp1] = MultipleRunGS(fp,[-2,2],1,40)
 %%
-2
 [xbestp2,fbestp2] = MultipleRunGS(fp,[-2,2],2,40)
 %%
 [xbesta1,fbesta1] = MultipleRunGS(fa,[-10,10],1,40)
@@ -18,9 +17,15 @@ fa = @(x) -20 * exp(-0.2 * sqrt(mean(x.^2))) - exp(mean(cos(2*pi*x))) + 21; % au
 %%
 sol = [];
 best = [];
-for i = 1:10
-    [sol,best]= [sol,best;MultipleRunGS(fa,[-10,10],3,40)];
+for i = 1:30
+    [solution, best_value] = MultipleRunGS(fa,[-10,10],3,40);
+    sol = [sol; solution];
+    best = [best; best_value];
 end
-sol
-
+%%
+mean([sol,best])
+[bestbest, index] = min(best);
+[worst,index2] = max(best)
+[sol(index,:),bestbest]
+[sol(index2,:),worst]
 
