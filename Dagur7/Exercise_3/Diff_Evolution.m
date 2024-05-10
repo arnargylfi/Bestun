@@ -1,9 +1,7 @@
-function [history,fbest,xbest] = Diff_Evolution(fun, n, bounds, maxGens)
+function [history,fbest,xbest] = Diff_Evolution(fun, n, bounds, F, CR, maxGens)
     N = 50;
     lb = bounds(1);
     ub = bounds(2);
-    F = 0.5
-    CR = 0.1
 
     pop = lb + (ub - lb) .* rand(N, n);
     history = zeros(maxGens, N, n);
