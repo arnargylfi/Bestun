@@ -4,6 +4,7 @@ function TSP(N,iterations)
     %%
     connections = 1:N; % original connections:
     connections = [connections,1]; %circular path
+    figure(101);
     hold on
     olddist = Inf;
     distances = zeros(iterations,1);

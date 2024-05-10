@@ -13,7 +13,6 @@ function [population, best_distance, best_route] = tsp_evolutionary_algorithm(N,
     best_route = [];
     best_distances = zeros(generations, 1);
     average_fitness = zeros(generations, 1);
-    
     for gen = 1:generations
         % Evaluate
         fitness = cellfun(@(x) path_length(x, dist_matrix), population);
@@ -69,14 +68,13 @@ function [population, best_distance, best_route] = tsp_evolutionary_algorithm(N,
         % disp(['Generation ', num2str(gen), ': Best Distance = ', num2str(best_distance), ', Average Fitness = ', num2str(average_fitness(gen))]);
         % 
     end
+    hold off;
     disp(['Generation ', num2str(gen), ': Best Distance = ', num2str(best_distance), ', Average Fitness = ', num2str(average_fitness(gen))]);
     if animate        
-        %Plotting convergence for debugging and to monitor if changes are
-        %benefitial
-        figure;
+        figure(100); % Use a specific figure number for TSP
         subplot(2,1,1);
         plot(best_distances);
-        title('Best Distance over Generations, best distance overall: ',best_distance);
+        title(['Best Distance over Generations, best distance overall: ', num2str(best_distance)]);
         xlabel('Generation');
         ylabel('Best Distance');
         
@@ -85,7 +83,9 @@ function [population, best_distance, best_route] = tsp_evolutionary_algorithm(N,
         title('Average Fitness over Generations');
         xlabel('Generation');
         ylabel('Fitness (Distance)');
+        hold off;
     end
+
 end
 
 function len = path_length(route, dist_matrix)
@@ -206,12 +206,10 @@ function [child1, child2] = crossover2(parent1, parent2, pc)
     remaining_indices = (num_swaps + 1):n;
 
     % Fill in the remaining positions in child1 with the remaining values from parent2
-    % Using setdiff to find values in parent2 not yet in child1, preserving order
     remaining_values_child1 = setdiff(parent2, child1(1:num_swaps), 'stable');
     child1(remaining_indices) = remaining_values_child1;
 
     % Fill in the remaining positions in child2 with the remaining values from parent1
-    % Using setdiff to find values in parent1 not yet in child2, preserving order
     remaining_values_child2 = setdiff(parent1, child2(1:num_swaps), 'stable');
     child2(remaining_indices) = remaining_values_child2;
 end
