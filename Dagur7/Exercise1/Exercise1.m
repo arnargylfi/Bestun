@@ -28,4 +28,5 @@ mean([sol,best])
 [worst,index2] = max(best)
 [sol(index,:),bestbest]
 [sol(index2,:),worst]
+STD = std([sol,best])
 
