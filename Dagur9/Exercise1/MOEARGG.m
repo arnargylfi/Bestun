@@ -1,46 +1,66 @@
-% Parameters
-populationSize = 100;
-numGenerations = 200;
-pc = 0.7;
-pm = 0.1;
-sigmas = 0.5; % Sharing distance
-% MOEA entry point
-function MOEA(fun, bounds, N, generations, pc, pm, sigmas, dimensions)
+function MOEA(fun, bounds, N, generations, pc, pm, sigmas, dimensions, animate)
     % Initialize population within bounds
-    population = initializePopulation(N, dimensions, bounds)
-
+    population = initializePopulation(N, dimensions, bounds);
+    history = zeros(generations,N,dimensions);
+    if animate
+        figure;
+        hold on;
+        scatter(population(:, 1), population(:, 2), 'b', 'filled');
+        xlabel('Objective 1');
+        ylabel('Objective 2');
+        title('Population and Archive Visualization');
+    end
     % Evolutionary loop
     for gen = 1:generations
         % Assess individuals
         ranks = paretoRanking(population, fun);
 
         % Selection and generation of offspring
-        offspring = [];
+        mating_pool = [];
         cnt = 1;
         for i = 1:2:N-1
             c1 = population(i,:);
             c2 = population(i+1,:);
-            selected = tournamentSelection(c1, c2, i, ranks, N, sigmas);
-            offspring(cnt) = selected; % Collect offspring
+            selected = tournamentSelection(population, c1, c2, i, ranks, N, sigmas);
+            mating_pool(cnt,:) = selected; % Collect offspring
             cnt = cnt + 1;
         end
+    
+        offspring = crossoverAndMutation(mating_pool, pc, pm);
 
         % % Dynamic Sharing (if applicable)
         % applySharing(offspring, sigmas);
 
         % Update population
         population = [population; offspring];
-        population = reducePopulation(population, N);
+        population = reducePopulation(population, N, ranks);
 
         % Archive non-dominated solutions
-        archive = updateArchive(population);
+        archive = updateArchive(population, ranks);
 
-        % Visualization
-        visualizePopulation(population, archive);
-
-        % Check termination condition
-        if convergenceCriteriaMet(archive)
-            break;
+        % % Visualization
+        % if animate
+        %     scatter(history(gen,:, 1), history(gen,:, 2), 'r', 'filled');
+        % end
+        % % Check termination condition
+        % if convergenceCriteriaMet(archive)
+        %     break;
+        % end
+        history(gen,:,:) = population;
+    end
+    if animate
+        prevPopulationColor = 'b';
+        for gen = 1:generations
+            % Plot current generation
+            scatter(history(gen,:,1), history(gen,:,2), prevPopulationColor, 'filled');
+            pause(0.1); % Pause for visualization
+            
+            % Update previous color
+            if strcmp(prevPopulationColor, 'b')
+                prevPopulationColor = 'r';
+            else
+                prevPopulationColor = 'b';
+            end
         end
     end
 end
@@ -49,31 +69,31 @@ function population = initializePopulation(N, dimensions, bounds)
     population = zeros(N, dimensions);
     for i = 1:N
         for d = 1:dimensions
-            population(i, d) = bounds(1, d) + (bounds(2, d) - bounds(1, d)) * rand();
+            population(i, d) = bounds(d,1) + (bounds(d,2) - bounds(d,1)) * rand();
         end
     end
 end
 
 % Tournament Selection Function
-function s = tournamentSelection(c1, c2, i, ranks, N, sigmas)
-    comp_set = randi([0 N],1,(N/10));
+function s = tournamentSelection(population, c1, c2, idx, ranks, N, sigmas)
+    comp_set = randi([1 N],1,(N/10));
     c1_dom = false; c2_dom = false;
-    if any(ranks(i)<ranks(comp_set))
+    if any(ranks(idx)<ranks(comp_set))
         c1_dom = true;
     end
-    if any(ranks(i+1)<ranks(comp_set))
+    if any(ranks(idx+1)<ranks(comp_set))
         c2_dom = true;
     end
     if c1_dom == c2_dom
-        f1 = sharedFitness(c1,comp_set, sigmas);
-        f2 = sharedFitness(c2,comp_set, sigmas);
+        f1 = sharedFitness(c1,population(comp_set,:), sigmas);
+        f2 = sharedFitness(c2,population(comp_set,:), sigmas);
         if f1 > f2
             s = c1;
         else
             s = c2;
         end
     else
-        if c1_dominated == false
+        if c1_dom == false
             s = c1;
         else
             s = c2;
@@ -121,10 +141,47 @@ function newPopulation = reducePopulation(population, N, ranks)
     [~, sortedIndices] = sort(ranks);
     population = population(sortedIndices, :);
     
-    if size(population, 1) > maxSize
-        newPopulation = population(1:maxSize, :);
+    if size(population, 1) > N
+        newPopulation = population(1:N, :);
     else
         newPopulation = population;
+    end
+end
+
+function archive = updateArchive(population, ranks)
+    nonDominatedIndices = find(ranks == 0);
+    archive = population(nonDominatedIndices, :);
+end
+
+function visualizePopulation(population, archive)
+      
+    % Plot population
+    scatter(population(:, 1), population(:, 2), 'b', 'filled');    
+end
+
+function offspring = crossoverAndMutation(parents, pc, pm)
+    numParents = size(parents, 1);
+    numVars = size(parents, 2);
+    offspring = [];
+    
+    for i = 1:2:numParents-1
+        if rand() < pc
+            % Arithmetic crossover
+            alpha = rand();
+            child1 = alpha * parents(i,:) + (1-alpha) * parents(i+1,:);
+            child2 = alpha * parents(i+1,:) + (1-alpha) * parents(i,:);
+            offspring = [offspring; child1; child2];
+        else
+            offspring = [offspring; parents(i,:); parents(i+1,:)];
+        end
+    end
+    
+    % Mutation
+    for i = 1:size(offspring, 1)
+        if rand() < pm
+            mutationPoint = randi(numVars);
+            offspring(i, mutationPoint) = offspring(i, mutationPoint) + randn();
+        end
     end
 end
 

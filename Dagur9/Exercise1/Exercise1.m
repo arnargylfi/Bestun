@@ -1,3 +1,13 @@
+% Parameters
+N = 100;
+generations = 200;
+pc = 0.7;
+pm = 0.1;
+sigmas = 0.5; % Sharing distance
+ffdimensions = 8;
+ffbounds = [-2 2;-2 2;-2 2;-2 2;-2 2;-2 2;-2 2;-2 2];
+MOEARGG(@ff, ffbounds, N, generations, pc, pm, sigmas, ffdimensions, true);
+
 function objectives = ft(x)
     % Ensure the input vector x has at least three elements
     if length(x) < 3
