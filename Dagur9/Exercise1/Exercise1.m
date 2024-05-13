@@ -38,3 +38,4 @@ function objectives = ff(x)
 
     % Combine objectives
     objectives = [ff1, ff2];
+end
