@@ -1,4 +1,4 @@
-function history = PatternSearch(X0,func, gridsize,minimum,maximum)
+function history = PatternSearch(X0,func, gridsize,minimum,maximum,tol)
     [X, Y] = meshgrid(minimum-2:0.1:maximum+2, minimum-2:0.1:maximum+2);
     Z = func([X(:),Y(:)]);
     Z = reshape(Z, size(X));
@@ -10,13 +10,9 @@ function history = PatternSearch(X0,func, gridsize,minimum,maximum)
     xline(minimum)
     prev_point = X0;
     max_iter = 100;
-    hold on
     history = [];
     for i = 1:max_iter
-        snapped_point = gridsize * round(X0 / gridsize);
-        plot([prev_point(1), X0(1)], [prev_point(2), X0(2)], 'b.-');
-        
-        pause(0.5)
+        snapped_point = gridsize * round(X0 / gridsize);        
         prev_point = X0;
         U = func(snapped_point);
         history=[history;X0(1),X0(2),U];
