@@ -9,7 +9,7 @@ Population = rand(N, dimensions) * (range(2) - range(1)) + range(1); % Random in
 function_evaluations = 0;
 alpha = rand;
 xbest = [0 0];
-m = 1.5;
+m = 2.5;
 paretoset = [];
 
 for k = 1:max_gens
