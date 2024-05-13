@@ -1,150 +1,192 @@
-function [Pareto_front, Pareto_set] = MOEA(func1, func2, N, sigma_share, range, pc, pm, max_gens, dimensions)
-    % Initialize population randomly within the given range
-    Population = bsxfun(@plus, bsxfun(@times, rand(N, dimensions), (range(2) - range(1))), range(1));
-    Pareto_front = [];
-    Pareto_set = [];
+function MOEA(fun, bounds, N, generations, pc, pm, sigmas, dimensions, animate)
+    % Initialize population within bounds
+    population = initializePopulation(N, dimensions, bounds);
+    if animate
+        figure;
+        hold on;
+        scatter(population(:, 1), population(:, 2), 'b', 'filled');
+        xlabel('Objective 1');
+        ylabel('Objective 2');
+        title('Population and Archive Visualization');
+    end
+    % Evolutionary loop
+    for gen = 1:generations
+        % Assess individuals
+        ranks = paretoRanking(population, fun);
 
-    for k = 1:max_gens
-        % Evaluate objective functions
-        func_eval1 = arrayfun(@(j) func1(Population(j,:)), 1:N);
-        func_eval2 = arrayfun(@(j) func2(Population(j,:)), 1:N);
+        % Selection and generation of offspring
+        mating_pool = [];
+        cnt = 1;
+        for i = 1:2:N-1
+            c1 = population(i,:);
+            c2 = population(i+1,:);
+            selected = tournamentSelection(population, c1, c2, i, ranks, N, sigmas);
+            mating_pool(cnt,:) = selected;
+            cnt = cnt + 1;
+        end
 
-        % Assign ranks using Pareto dominance
-        [rank, isNonDominated] = paretoRank([func_eval1', func_eval2']);
+        offspring = crossoverAndMutation(mating_pool, pc, pm);
 
-        % Update Pareto front and set
-        Pareto_front = [func_eval1(isNonDominated)', func_eval2(isNonDominated)'];
-        Pareto_set = [Pareto_set; Population(isNonDominated, :)];
+        % % Dynamic Sharing (if applicable)
+        % applySharing(offspring, sigmas);
 
-        % Perform tournament selection based on rank
-        sharedFitness = dynamicSharing(Population, rank, sigma_share);
-        selected_indices = tournamentSelection(rank, N, sharedFitness);
-        matingPool = Population(selected_indices, :);
+        % Update population
+        population = [population; offspring];        
+        population = reducePopulation(population, N, ranks);
 
-        % Generate offspring via crossover and mutation
-        children = reproduce(matingPool, pc, pm, dimensions, range);
+        % Archive non-dominated solutions
+        archive = updateArchive(population, ranks);
 
-        % Replace the old population with new children
-        Population = children;
+        % Visualization update
+        if animate
+            cla;  % Clear current axis to update colors
+            % Plot all previous populations in blue
+            scatter(population(:, 1), population(:, 2), 'bo'); 
+            % Plot the new generation in red
+            scatter(archive(1,:), archive(2,:), 'ro');
+            pause(0.1);  % Pause for visualization
+        end
 
-        % Visualization of the population
-        plotParetoFront(Population, Pareto_set, func1, func2, k);
+        % % Check termination condition
+        % if convergenceCriteriaMet(archive)
+        %     break;
+        % end
+        history(gen,:,:) = population;
     end
 end
 
-function [rank, isNonDominated] = paretoRank(vals)
-    % Determine Pareto ranks and find non-dominated solutions
-    N = size(vals, 1);
-    rank = zeros(N, 1);
-    isNonDominated = true(N, 1);
-
+function population = initializePopulation(N, dimensions, bounds)
+    population = zeros(N, dimensions);
     for i = 1:N
-        for j = 1:N
-            if all(vals(i, :) >= vals(j, :)) && any(vals(i, :) > vals(j, :))
-                rank(i) = rank(i) + 1;
-                if rank(i) == 1
-                    isNonDominated(i) = false;
-                end
-            end
+        for d = 1:dimensions
+            population(i, d) = bounds(d,1) + (bounds(d,2) - bounds(d,1)) * rand();
         end
     end
 end
 
-function indices = tournamentSelection(rank, N, sharedFitness)
-    % Perform modified binary tournament selection based on both rank and shared fitness
-    indices = zeros(N, 1);
-    for i = 1:N
-        % Select two random candidates
-        candidates = randperm(N, 2);
-        candidate1 = candidates(1);
-        candidate2 = candidates(2);
-
-        % Determine dominance based on rank
-        if rank(candidate1) < rank(candidate2)
-            winner = candidate1;
-        elseif rank(candidate1) > rank(candidate2)
-            winner = candidate2;
+% Tournament Selection Function
+function s = tournamentSelection(population, c1, c2, idx, ranks, N, sigmas)
+    comp_set = randi([1 N],1,(N/10));
+    c1_dom = false; c2_dom = false;
+    if any(ranks(idx)<ranks(comp_set))
+        c1_dom = true;
+    end
+    if any(ranks(idx+1)<ranks(comp_set))
+        c2_dom = true;
+    end
+    if c1_dom == c2_dom
+        f1 = sharedFitness(c1,population(comp_set,:), sigmas);
+        f2 = sharedFitness(c2,population(comp_set,:), sigmas);
+        if f1 > f2
+            s = c1;
         else
-            % If ranks are equal, use shared fitness to decide
-            if sharedFitness(candidate1) > sharedFitness(candidate2)
-                winner = candidate1;
-            else
-                winner = candidate2;
-            end
+            s = c2;
         end
-        indices(i) = winner;
-    end
-end
-
-
-function children = reproduce(pool, pc, pm, dimensions, range)
-    % Crossover and mutate to produce new children
-    children = zeros(size(pool));
-    for i = 1:size(pool, 1)
-        % Simple one-point crossover
-        if rand < pc
-            point = randi([1, dimensions-1]);
-            partner = mod(i + randi([1, size(pool, 1)-1]), size(pool, 1)) + 1;
-            children(i, :) = [pool(i, 1:point), pool(partner, point+1:end)];
-        else
-            children(i, :) = pool(i, :);
-        end
-
-        % Mutation
-        mutation_mask = rand(1, dimensions) < pm;
-        mutation_amount = randn(1, dimensions) .* (range(2) - range(1)) / 10;
-        children(i, :) = children(i, :) + mutation_mask .* mutation_amount;
-    end
-end
-
-function plotParetoFront(Population, Pareto_set, func1, func2, generation)
-    % Select figure with a specific identifier, create if it does not exist
-    figure(1);  % Use a consistent figure number to prevent new windows
-    clf;  % Clear the figure to refresh the plot
-    
-    % Evaluate the current population
-    current_scores = [arrayfun(func1, Population), arrayfun(func2, Population)];
-    
-    % Evaluate the Pareto set (elitist individuals)
-    if ~isempty(Pareto_set)
-        pareto_scores = [arrayfun(func1, Pareto_set), arrayfun(func2, Pareto_set)];
     else
-        pareto_scores = [];
-    end
-    
-    hold on;
-   
-    % Plot current population as blue circles
-    plot(current_scores(:,1), current_scores(:,2), 'bo', 'DisplayName', 'Current Population');
-    
-    % Plot Pareto set as red stars
-    plot(pareto_scores(:,1), pareto_scores(:,2), 'r.', 'MarkerSize', 8, 'DisplayName', 'Pareto Set');
-    
-    % Add title, labels, and legend
-    title(sprintf('Generation: %d', generation));
-    xlabel('Function 1 Score');
-    ylabel('Function 2 Score');
-    legend show;
-    
-    % Adjust axis limits for better visualization
-    xlim([0 1]);
-    ylim([0 1]);
-    
-    hold off;
-    drawnow;
-end
-
-function sharedFitness = dynamicSharing(population, ranks, sigmaShare)
-    numIndividuals = size(population, 1);
-    distances = pdist2(population, population);
-    sharedFitness = zeros(numIndividuals, 1);
-
-    for i = 1:numIndividuals
-        sh = sum((1 - (distances(i,:) / sigmaShare).^2) .* (distances(i,:) < sigmaShare));
-        if sh == 0
-            sh = 1; % To avoid division by zero
+        if c1_dom == false
+            s = c1;
+        else
+            s = c2;
         end
-        sharedFitness(i) = 1 / (ranks(i) + 1) / sh;
     end
 end
+
+% Shared Fitness Function
+function fitness = sharedFitness(individual, population, sigma_share)
+    alpha = 1; % Decay coefficient
+    distances = pdist2(individual, population);
+    sh = sum((1 - (distances / sigma_share).^alpha) .* (distances < sigma_share));
+    if sh == 0
+        sh = 1; % To avoid division by zero
+    end
+    fitness = 1 / sh; % Simplified shared fitness
+end
+
+function ranks = paretoRanking(population, fun)
+    numIndividuals = size(population, 1);
+    ranks = zeros(numIndividuals, 1);
+    
+    for i = 1:numIndividuals
+        for j = 1:numIndividuals
+            if i ~= j && dominates(fun, population(j,:), population(i,:))
+                ranks(i) = ranks(i) + 1;
+            end
+        end
+    end
+end
+
+% Dominance Function
+function isDom = dominates(fun, ind1, ind2)
+    results1 = evaluateObjectives(ind1, fun);
+    results2 = evaluateObjectives(ind2, fun);
+    isDom = all(results1 <= results2) && any(results1 < results2);
+end
+
+% Objective Evaluation
+function results = evaluateObjectives(individual, fun)
+    results = fun(individual);
+end
+
+function newPopulation = reducePopulation(population, N, ranks)
+    [~, sortedIndices] = sort(ranks);
+    population = population(sortedIndices, :);
+    
+    if size(population, 1) > N
+        newPopulation = population(1:N, :);
+    else
+        newPopulation = population;
+    end
+end
+
+function archive = updateArchive(population, ranks)
+    nonDominatedIndices = find(ranks == 0);
+    archive = population(nonDominatedIndices, :);
+end
+
+function visualizePopulation(population, archive)
+      
+    % Plot population
+    scatter(population(:, 1), population(:, 2), 'b', 'filled');    
+end
+
+function offspring = crossoverAndMutation(parents, pc, pm)
+    numParents = size(parents, 1);
+    numVars = size(parents, 2);
+    offspring = [];
+    
+    for i = 1:2:numParents-1
+        if rand() < pc
+            % Arithmetic crossover
+            alpha = rand();
+            child1 = alpha * parents(i,:) + (1-alpha) * parents(i+1,:);
+            child2 = alpha * parents(i+1,:) + (1-alpha) * parents(i,:);
+            offspring = [offspring; child1; child2];
+        else
+            offspring = [offspring; parents(i,:); parents(i+1,:)];
+        end
+    end
+    
+    % Mutation
+    for i = 1:size(offspring, 1)
+        if rand() < pm
+            mutationPoint = randi(numVars);
+            offspring(i, mutationPoint) = offspring(i, mutationPoint) + randn();
+        end
+    end
+end
+
+
+% function sharedFitness = dynamicSharing(population, ranks, sigmaShare)
+%     numIndividuals = size(population, 1);
+%     distances = pdist2(population, population);
+%     sharedFitness = zeros(numIndividuals, 1);
+% 
+%     for i = 1:numIndividuals
+%         sh = sum((1 - (distances(i,:) / sigmaShare).^2) .* (distances(i,:) < sigmaShare));
+%         if sh == 0
+%             sh = 1; % To avoid division by zero
+%         end
+%         sharedFitness(i) = 1 / (ranks(i) + 1) / sh;
+%     end
+% end
 
