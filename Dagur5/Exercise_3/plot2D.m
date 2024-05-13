@@ -10,4 +10,5 @@ function plot2D(func, bounds, xmin, x_values)
     ylabel('y'); 
     title('Search Path on Contour Plot');
     colorbar;
+    hold off
 end

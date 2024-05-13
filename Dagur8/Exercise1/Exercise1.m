@@ -10,9 +10,8 @@ dimensions = 2;
 range = [-2 2];
 fp(0)
 %%
-[xbestr,fbestr] = GAFP(fr,100,5,range,crossP,mutateP,20,2)
+[xbestr2,fbestr2] = GAFP(fr,100,5,range,crossP,mutateP,20,2)
 %%
-[xbestr,fbestr] = GAFP(fr,1000,3,range,crossP,mutateP,100,3)
 
 %%
 [xbestp1,fbestp1] = GAFP(fp,1000,10,range,crossP,mutateP,30,1)

@@ -44,15 +44,27 @@ start2 = [0; 0];
 start3 = [4; 2];
 start4 = [5; 8];
 
+figure(1)
 plot2D(func1, bounds1, xmin1, result1(:,1:2));
+figure(2)
 plot2D(func2, bounds2, xmin2, result2(:,1:2));
+figure(3)
 plot2D(func3, bounds3, xmin3, result3(:,1:2));
+figure(4)
 plot2D(func4, bounds4, xmin4, result4(:,1:2));
+figure(5)
 plot3D(func1, bounds1, xmin1, result1(:,1:2), [-45, 30]);
+figure(6)
 plot3D(func2, bounds2, xmin2, result2(:,1:2), [125, 60]);
+figure(7)
 plot3D(func3, bounds3, xmin3, result3(:,1:2), [-100, 50]);
+figure(8)
 plot3D(func4, bounds4, xmin4, result4(:,1:2), [-45, 30]);
+figure(9)
 plot3DZoom(func1, xmin1, result1(:,1:2), [-45, 50]);
+figure(10)
 plot3DZoom(func2, xmin2, result2(:,1:2), [125,60]);
+figure(11)
 plot3DZoom(func3, xmin3, result3(:,1:2), [-100, 50]);
+figure(12)
 plot3DZoom(func4, xmin4, result4(:,1:2), [-45, 30]);

@@ -21,3 +21,12 @@ plot2D(func1, bounds1, xmin1, path1);
 plot2D(func2, bounds2, xmin2, path2);
 plot2D(func3, bounds3, xmin3, path3);
 plot2D(func4, bounds4, xmin4, path4);
+
+plot3D(func1, bounds1, xmin1, path1(:,1:2), [-45, 30]);
+plot3D(func2, bounds2, xmin2, path2(:,1:2), [125, 60]);
+plot3D(func3, bounds3, xmin3, path3(:,1:2), [-100, 50]);
+plot3D(func4, bounds4, xmin4, path4(:,1:2), [-45, 30]);
+plot3DZoom(func1, xmin1, path1(:,1:2), [-45, 50]);
+plot3DZoom(func2, xmin2, path2(:,1:2), [125,60]);
+plot3DZoom(func3, xmin3, path3(:,1:2), [-100, 50]);
+plot3DZoom(func4, xmin4, path4(:,1:2), [-45, 30]);
