@@ -11,10 +11,12 @@ alpha = rand;
 xbest = [0 0];
 m = 1.5;
 paretoset = [];
+
 for k = 1:max_gens
     %Dominance ranking
     func_eval1 = arrayfun(@(j) func1(Population(j,:)), 1:N);
     func_eval2 = arrayfun(@(j) func2(Population(j,:)), 1:N);
+
     rank = zeros(N,1);
     for i = 1:N
         rank(i) = 1+sum(func_eval1 < func_eval1(i) & func_eval2<func_eval2(i));
@@ -23,6 +25,12 @@ for k = 1:max_gens
     for i = 1:length(paretosetindex)
         paretoset = [paretoset;func_eval1(paretosetindex(i)),func_eval2(paretosetindex(i))];
     end
+    scatter(paretoset(:,1),paretoset(:,2),'ro');
+    hold on
+    paretofrontier = scatter(func_eval1,func_eval2,'bo');
+    pause(0.5)
+    set(paretofrontier,'Visible','Off')
+
 
     fitness = 1./rank;
 
@@ -39,7 +47,7 @@ for k = 1:max_gens
    [Fx, Fy] = ind2sub(size(Distances), max_dist_index); % Convert linear index to row and column indices
    d_max = abs(func_eval2(Fx)-func_eval2(Fy))+abs(func_eval1(Fx)-func_eval1(Fy));
    d = (d_max+d_min)/2;
-   sigma = 0.5*d*N^(1/(1-2.5));
+   sigma = 0.5*d*N^(1/(1-m));
    sigma_mate = 3*sigma;
    %FITNESS SHARING
    SF = Distances<sigma;
@@ -90,6 +98,11 @@ for k = 1:max_gens
 
    
 end
+
+scatter(paretoset(:,1),paretoset(:,2),'ro');
+hold on
+paretofrontier = scatter(func_eval1,func_eval2,'bo');
+
 
 
 function child = crossover(parent1, parent2, pc)
