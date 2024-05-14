@@ -1,8 +1,8 @@
 close all
-ub = 1;
-lb = 0;
+ub = -2;
+lb = 2;
 N0 = 10;
-points = rand(N0,2);
+points = (ub - lb) * rand(N0, 2) + lb;
 points(1:4,:) = [lb lb; ub lb; ub ub; lb ub];
 for i = 1:200
     Delaunay = delaunayTriangulation(points(:,1),points(:,2));
