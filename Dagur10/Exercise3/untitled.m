@@ -4,7 +4,7 @@ lb = 0;
 N0 = 10;
 points = rand(N0,2);
 points(1:4,:) = [lb lb; ub lb; ub ub; lb ub];
-for i = 1:300
+for i = 1:200
     Delaunay = delaunayTriangulation(points(:,1),points(:,2));
     tri = Delaunay.ConnectivityList;
     centers = incenter(Delaunay);
@@ -21,7 +21,7 @@ for i = 1:300
     end
     points = [points;center_of_G(1),center_of_G(2)];
     scatter(center_of_G(1),center_of_G(2),'ro')
-    pause(0.2)
+    pause(0.05)
     hold off 
 end
 
