@@ -7,8 +7,7 @@ pm0 = pm;
 Population = rand(N, dimensions) * (range(2) - range(1)) + range(1); % Random initialization between -ub and lb
 
 function_evaluations = 0;
-alpha = rand;
-xbest = [0 0];
+alpha = 4;
 m = 2.5;
 paretoset = [];
 
@@ -95,7 +94,6 @@ for k = 1:max_gens
         mutant_children(i,:) = mutate(children(i,:),pm);
     end
     Population = mutant_children;
-
    
 end
 

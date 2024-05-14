@@ -33,7 +33,7 @@ for k = 1:max_gens
     end
 
     parents = zeros(N,dimensions);
-    for i = 1:N
+    for i = 1:N/2
         %Select tournament_size number of random indeces between one and population size
         individuals = randperm(length(Population),tournament_size);
         %evaluate the function for each of the chosen individuals, negative because the fitness is worse the higher the function value is
