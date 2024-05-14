@@ -1,23 +1,23 @@
-function uniformity = Exercise1(points)
-uniformity = 0;
-n = size(points, 1);
-dimension = size(points,2);
-for i = 1:n
-    uniformity = uniformity + sum(1 ./ sum((points(i+1:end,:) - points(i,:)).^2, 2));
-end
-LHSplot(points)
-% num_plots = dimension*(dimension-1)/2;
-% plot_no = 1;
-% for k = 1:dimension
-%     for l = k+1:dimension
-%         subplot(ceil(num_plots/2), 2, plot_no)
-%         scatter(points(:,k), points(:,l))
-%         xlabel(['x_', num2str(k)])
-%         ylabel(['x_', num2str(l)])
-%         plot_no = plot_no + 1;
-%     end
-% end
-end
+clear all; close all; clc
+bounds2D = [0 1; 0 1];
+bounds3D = [0 1; 0 1;0 1];
+% n=2 N=50, 100, 200
+samples2N50 = LHS(50, bounds2D);
+samples2N100 = LHS(100, bounds2D);
+samples2N200 = LHS(200, bounds2D);
+% n=3 N=50, 100, 200
+samples3N50 = LHS(50, bounds3D);
+samples3N100 = LHS(100, bounds3D);
+samples3N200 = LHS(200, bounds3D);
+
+%Visualize it all
+LHSplot(samples2N50);
+LHSplot(samples2N100);
+LHSplot(samples2N200);
+LHSplot(samples3N50);
+LHSplot(samples3N100);
+LHSplot(samples3N200);
+
 
 function LHSplot(samples)
     dimensions = size(samples, 2);
@@ -39,4 +39,3 @@ function LHSplot(samples)
         ylabel(sprintf('x%d', pairs(i, 2)));
     end
 end
-
