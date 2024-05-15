@@ -1,30 +1,41 @@
-clear
-plotmeshsize = 20;
-x=linspace(-3,3,plotmeshsize);
-y=linspace(-3,3,plotmeshsize);
-[xi,yi]=meshgrid(x,y);
-
-for j=1:length(x)
-    for k=1:length(y)
-        zi(k,j)=exercise_3_function([x(j) y(k)]'); 	% evaluate function f
+    clear
+    plotmeshsize = 20;
+    x=linspace(-3,3,plotmeshsize);
+    y=linspace(-3,3,plotmeshsize);
+    [xi,yi]=meshgrid(x,y);
+    
+    zi = zeros(plotmeshsize);
+    for j=1:plotmeshsize
+        for k=1:plotmeshsize
+            zi(k,j)=exercise_3_function([x(j) y(k)]'); 	% evaluate function f
+        end
     end
-end
-mesh(xi,yi,zi); 				% surface plot of the function f
-hold on
+    mesh(xi,yi,zi,'FaceAlpha',0.5); 				% surface plot of the function f
+    hold on
+        
+    %Gaussian basis functions
+    N = 3;
+    xgrid=linspace(-3,3,N);
+    ygrid=linspace(-3,3,N);
+    [X,Y]=meshgrid(xgrid,ygrid);
+    % Compute distances
+    N = 49;
+    xgrid = linspace(-3, 3, sqrt(N));
+    ygrid = linspace(-3, 3, sqrt(N));
+    [X, Y] = meshgrid(xgrid, ygrid);
+    XY = [X(:),Y(:)];
+    Phi = zeros(N);
+    for i = 1:N
+        for j = 1:N
+            Phi(i,j) = exp(-(norm(XY(i,:)-XY(j,:))^2));
+        end
+    end
+    Z = zeros(N,1);
+    for i = 1:N
+        Z(i) = exercise_3_function(XY(i,:));
+    end
+    lambda = Phi\Z;
+    Zpredicted = Phi*lambda
+    plot3(X(:),Y(:),Zpredicted,'ro')
 
-
-centers_x = linspace(min(x), max(x), plotmeshsize);
-centers_y = linspace(min(y), max(y), plotmeshsize);
-[centers_xi, centers_yi] = meshgrid(centers_x, centers_y);
-centers = [centers_xi(:), centers_yi(:)];
-
-%Gaussian basis functions
-N = 9;
-xgrid=linspace(-3,3,N);
-ygrid=linspace(-3,3,N);
-[X,Y]=meshgrid(xgrid,ygrid);
-phi = zeros(N);
-% Compute distances
-for i = 1:N
-    distances(i, :) = sqrt((X(i,:) - X(1,1)).^2 + (Y(i,:) - Y(1,1)).^2);
-end
+    
