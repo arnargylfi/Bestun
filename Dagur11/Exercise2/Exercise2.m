@@ -11,9 +11,9 @@ y = [2.9004, 2.8718, 2.6121, 2.5500, 2.3605, 2.0048, 1.8463, 1.5930, 1.2475, 1.1
 % plot(x,y, 'ro');
 % Decided that using cos(x) and exp(-x) would be a good approach due to the
 % shape of the data
-fun1 = @(param1, x) param1(1) * cos(param1(2) * x) + param1(3) * exp(-param1(4) * x) + param1(5);
+fun1 = @(param1, x) param1(1) * cos(param1(2) * x) + param1(3) * exp(-param1(4) * x);
 objectiveFun1 = @(param1) fun1(param1, x) - y;
-initialParams1 = [1, 1, 1, 1, 1];
+initialParams1 = [1, 1, 1, 1];
 
 options = optimoptions('lsqnonlin', 'Display', 'iter');
 fittedParams1 = lsqnonlin(objectiveFun1, initialParams1, [], [], options);
