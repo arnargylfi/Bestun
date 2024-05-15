@@ -10,7 +10,7 @@
             zi(k,j)=exercise_3_function([x(j) y(k)]'); 	% evaluate function f
         end
     end
-    mesh(xi,yi,zi,'FaceAlpha',0.5); 				% surface plot of the function f
+    surf(xi,yi,zi,'FaceAlpha',0.2); 				% surface plot of the function f
     hold on
         
     %Gaussian basis functions
@@ -19,7 +19,7 @@
     ygrid=linspace(-3,3,N);
     [X,Y]=meshgrid(xgrid,ygrid);
     % Compute distances
-    N = 49;
+    N = 169;
     xgrid = linspace(-3, 3, sqrt(N));
     ygrid = linspace(-3, 3, sqrt(N));
     [X, Y] = meshgrid(xgrid, ygrid);
@@ -36,6 +36,6 @@
     end
     lambda = Phi\Z;
     Zpredicted = Phi*lambda
-    plot3(X(:),Y(:),Zpredicted,'ro')
+    plot3(X(:),Y(:),Zpredicted,'k.','MarkerSize',10)
 
     
