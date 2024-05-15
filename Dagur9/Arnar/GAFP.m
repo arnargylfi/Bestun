@@ -1,8 +1,4 @@
 function paretoset = GAFP(func1,func2,N,tournament_size,range,pc,pm,max_gens,dimensions)
-
-
-
-
 pm0 = pm;
 Population = rand(N, dimensions) * (range(2) - range(1)) + range(1); % Random initialization between -ub and lb
 
