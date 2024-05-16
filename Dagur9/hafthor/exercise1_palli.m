@@ -26,6 +26,41 @@ lims = repmat([-2 2],n,1);
 plot_axis = [0 1 0 1];
 mea(f,N,n,lims,pc,pm,share_res,mate_res,Beta,Alpha,plot_axis)
 
+function mea(f,N,n,lims,pc,pm,share_res,mate_res,Beta,Alpha,plot_axis)
+    % f: objective function
+    % N: number of individuals
+    % n: number of input dimensions
+    % lims: row(upper and lower limits) col(dimension)
+    % pc: crossover probability
+    % pm: mutation probability
+    % share_res: sharing restriction
+    % mate_res: mating restriction
+    % sigma_mate: sharing function range
+    % sigma_mate: mating range
+    % Beta: mution distribution
+    % Alpha: sharing function distribution
+    ev = 0; % 0 evaluations
+    k = 1; % 1st generation
+    P = initialize_population(n,N,lims); % initialization
+    [fit,ev,fval,dom] = pareto_ranking(P,f,ev,plot_axis); % rank
+    [sigma_share, sigma_mate] = update_sigma(fval,N);
+    fit = dynamic_sharing(fit,fval,sigma_share,N,share_res,Alpha);
+    E = P; Efval = fval;
+    Eold = E; Efold = Efval; p = []; domold = dom;
+    termination = false;
+    while ~termination
+        k = k+1;
+        Ptemp = selection(P,fit,sigma_mate,mate_res,dom);
+        P = crossover(Ptemp,pc,lims);
+        P = mutation(P,pm,Beta,lims);
+        [~,ev,fval,dom] = pareto_ranking(P,f,ev,plot_axis); % rank
+        [sigma_share, sigma_mate] = update_sigma(Efval,N);
+        [E,Efval,P,fit] = elites(P,fval,E,Efval,N,sigma_share,share_res,Alpha,k,plot_axis);
+        [termination,p,Eold,Efold,domold,p_term] = convergance(p,ev,k,Eold,E,Efval,Efold,domold,plot_axis);
+        fprintf('iterations: %d, function calls: %d, Convergence(p_k): %.2f\n',k,ev,p_term)
+    end
+end
+
 function R = child(P1,P2)
     % parents P1 and P2, child R
     r = rand; % method selection
@@ -174,42 +209,6 @@ function P = initialize_population(n,N,lims)
             %        [0, 1]   lim(2)- lim(1)    lim(1)
             P(i,j) = rand() * diff(lims(j,:)) + lims(j,1);
         end
-    end
-end
-
-
-function mea(f,N,n,lims,pc,pm,share_res,mate_res,Beta,Alpha,plot_axis)
-    % f: objective function
-    % N: number of individuals
-    % n: number of input dimensions
-    % lims: row(upper and lower limits) col(dimension)
-    % pc: crossover probability
-    % pm: mutation probability
-    % share_res: sharing restriction
-    % mate_res: mating restriction
-    % sigma_mate: sharing function range
-    % sigma_mate: mating range
-    % Beta: mution distribution
-    % Alpha: sharing function distribution
-    ev = 0; % 0 evaluations
-    k = 1; % 1st generation
-    P = initialize_population(n,N,lims); % initialization
-    [fit,ev,fval,dom] = pareto_ranking(P,f,ev,plot_axis); % rank
-    [sigma_share, sigma_mate] = update_sigma(fval,N);
-    fit = dynamic_sharing(fit,fval,sigma_share,N,share_res,Alpha);
-    E = P; Efval = fval;
-    Eold = E; Efold = Efval; p = []; domold = dom;
-    termination = false;
-    while ~termination
-        k = k+1;
-        Ptemp = selection(P,fit,sigma_mate,mate_res,dom);
-        P = crossover(Ptemp,pc,lims);
-        P = mutation(P,pm,Beta,lims);
-        [~,ev,fval,dom] = pareto_ranking(P,f,ev,plot_axis); % rank
-        [sigma_share, sigma_mate] = update_sigma(Efval,N);
-        [E,Efval,P,fit] = elites(P,fval,E,Efval,N,sigma_share,share_res,Alpha,k,plot_axis);
-        [termination,p,Eold,Efold,domold,p_term] = convergance(p,ev,k,Eold,E,Efval,Efold,domold,plot_axis);
-        fprintf('iterations: %d, function calls: %d, Convergence(p_k): %.2f\n',k,ev,p_term)
     end
 end
 
