@@ -66,6 +66,9 @@ sigma_m = 0.5;      % Mating distance
 
 %%
 %ft
+pm = 0.1;
+sigma_m = 0.6;
+sigma_share = 0.6;
 [Pareto_front_ft, Pareto_set_ft] = MOEA(@ft, dimensions_ft, bounds_ft, N, max_gens, pc, pm, sigma_share, sigma_m, [0.5 1], [0 5], true, true);
 %%
 
