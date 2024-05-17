@@ -2,12 +2,14 @@ clear
 addpath('..\')
 xbound = [-2 3];
 ybound = [-1 2];
+ub = [xbound(2),ybound(2)];
+lb = [xbound(1),ybound(1)];
 
 %-----TEKUR U.Þ.B (N)*10 SEK og SVO 10 SEK FYRIR HVERT ITERATION Í FOR LOOPINU-----
 
 N = 8; %CHOOSE NUMBER OF FUNCTION EVALUATIONS
 % Generate random points
-inputPoints = LHS(N,[xbound;ybound]);
+inputPoints = lhsdesign(N,2).*(ub-lb)+lb;
 wrapped_f = @(row) exercise_1_function(inputPoints(row,:)); %til að geta gert vector evaluation á f
 tic
 Y = arrayfun(wrapped_f,1:N); %EVALUATE
