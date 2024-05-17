@@ -29,7 +29,6 @@ lambda = X\Y';
 %% OPTIMIZE SURROGATE MODEL AND UPDATAE AND SO ON
 S = @(x) createBasisFunction(x,basis)*lambda;
 for i = 1:10
-    close
     [xmin,ymin] = ParticleSwarm(S,100,2.05,2,[xbound;ybound],1000);
     %EVALUATE rEAL FUNCTION At miNIMUM
     realY_min = exercise_1_function(xmin);
@@ -37,15 +36,14 @@ for i = 1:10
     inputPoints = [inputPoints;xmin];
     Y = [Y,realY_min];
     %REPEAT PROCESS OF MODEL CREATION
-    X = ones(N+i,1);
+    X = ones(length(Y),1);
     for j = 1:basis
-        X = [X,inputPoints(:,1).^j,inputPoints(:,2).^j]
+        X = [X,inputPoints(:,1).^j,inputPoints(:,2).^j];
     end
     lambda = X\Y';
 
 
              %PLOTS
-            close
             plotmeshsize = 100;
             x1_plot = linspace(xbound(1),xbound(2),plotmeshsize);
             x2_plot = linspace(ybound(1),ybound(2),plotmeshsize);
@@ -56,7 +54,6 @@ for i = 1:10
             end
             Y_model = X_plot*lambda;
             Y_model = reshape(Y_model, size(X1_plot));
-            figure;
             surf(X1_plot, X2_plot, Y_model,'DisplayName','Model');
             alpha(0.5)
             xlabel('x1');
@@ -72,7 +69,7 @@ for i = 1:10
             plot3([xmin(1) xmin(1)], [xmin(2) xmin(2)], [ymin realY_min], 'r', 'LineWidth', 1.5, 'HandleVisibility', 'off');
     error = rmse(ymin,realY_min);
     sprintf('Root mean square error at surrogate minima = %f',error)
-
+    hold off
 end
 
 
