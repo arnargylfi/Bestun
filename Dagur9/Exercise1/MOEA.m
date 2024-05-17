@@ -12,11 +12,14 @@ function [Pareto_front, Pareto_set] = MOEA(objective_funcs, dimensions, bounds, 
         Obj_values = evaluate_population(Population, objective_funcs);
         
         % Update Pareto front and Pareto set
-        [Pareto_front, Pareto_set] = update_pareto_front(Population, Obj_values);
-
+        [newPareto_front, newPareto_set] = update_pareto_front(Population, Obj_values);
+        Pareto_set = [Pareto_set;newPareto_set];
+        Pareto_front = [Pareto_front;newPareto_front];
+        ParetoObj_values = evaluate_population(Pareto_set, objective_funcs);
+        [Pareto_front, Pareto_set] = update_pareto_front(Pareto_set, ParetoObj_values);
         % Archive non-dominated individuals
-        % [archive_front,archive_set] = update_archive(archive_set, Population, Obj_values);
         if share_res
+            size(Population);
             [archive_front,archive_set] = update_archive_shared_fitness(archive_set, Population, Obj_values, sigma_share);
         else
             [archive_front,archive_set] = update_archive(archive_set, Population, Obj_values);
@@ -49,9 +52,9 @@ function [Pareto_front, Pareto_set] = MOEA(objective_funcs, dimensions, bounds, 
         clf;
         hold on;
         grid on
-        % scatter(Obj_values(:, 1), Obj_values(:, 2), 'bo');
-        scatter(Pareto_front(:, 1), Pareto_front(:, 2), 'ro');
-        scatter(archive_front(:, 1), archive_front(:, 2), 'go', 'filled');
+        scatter(Obj_values(:, 1), Obj_values(:, 2), 'bo');
+        scatter(Pareto_front(:, 1), Pareto_front(:, 2), 'ro', 'filled');
+        % scatter(archive_front(:, 1), archive_front(:, 2), 'go', 'filled');
         xlim(plotxlim);
         ylim(plotylim);
         title(sprintf('Generation %d', gen));
@@ -61,7 +64,7 @@ function [Pareto_front, Pareto_set] = MOEA(objective_funcs, dimensions, bounds, 
         hold off;
         
         % Termination condition based on convergence measure
-        if gen > 1 && (abs(p(gen)-1)) < 0.001
+        if gen > 50 && (abs(p(gen)-1)) < 0.01
             break;
         end
     end
@@ -119,7 +122,7 @@ function [archive_front, archive_set] = update_archive_shared_fitness(archive_se
     fitness_shared = shared_fitness(archive_obj_values, sigma_share);
     [~, sorted_indices] = sort(fitness_shared, 'descend');
     archive_set = archive_set(sorted_indices, :);
-    archive_front = evaluate_population(archive_set, @ff);
+    archive_obj_values = evaluate_population(archive_set, @ff);
     % Remove dominated individuals from archive
     [archive_pareto_front, ~] = update_pareto_front(archive_set, archive_obj_values);
     archive_front = archive_pareto_front;
@@ -149,7 +152,7 @@ function mating_pool = selection(Population, Obj_values, sigma_m, mate_res)
     end
 end
 
-function parents = tournament_selection(Population, Obj_values, sigma_m)
+function parents = tournament_selection(Population, Obj_values, sigma_m, mate_res)
     % Select two candidates
     N = size(Population, 1);
     candidate1 = randi(N);
@@ -164,7 +167,7 @@ function parents = tournament_selection(Population, Obj_values, sigma_m)
     else
         candidate2 = randi(N);
     end
-    
+    candidate_indices = [candidate1;candidate2];
     if dominates(Obj_values(candidate1, :), Obj_values(candidate2, :))
         parents = Population(candidate1, :);
         parents = [parents; Population(randi(size(Population, 1)), :)]; % Ensure two parents
