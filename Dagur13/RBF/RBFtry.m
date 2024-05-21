@@ -27,7 +27,7 @@ end
 lambda = Phi\Y';
 
 % Evaluate the basis functions at grid points
-
+besty = inf;
 
 %% OPTIMIZE SURROGATE MODEL AND UPDATAE AND SO ON
 S = @(x) Phi_calc(x,inputPoints,c)*lambda;
@@ -41,6 +41,11 @@ for i = 1:10
     %REPEAT PROCESS OF MODEL CREATION
     N = length(Y);
     Phi = zeros(N);
+    if realY_min < besty
+        besty = realY_min;
+        bestx = xmin;
+    end
+
     for i = 1:N
         Phi(i,:) = Phi_calc(inputPoints(i,:), inputPoints,c);
     end
@@ -73,6 +78,7 @@ for i = 1:10
             plot3([xmin(1) xmin(1)], [xmin(2) xmin(2)], [ymin realY_min], 'r', 'LineWidth', 1.5, 'HandleVisibility', 'off');
     error = rmse(ymin,realY_min);
     sprintf('Root mean square error at surrogate minima = %f, iteration = %d',error,i)
+    fprintf('Minimum x_1,x_2 = %s, min y = %f\n', mat2str(bestx),besty);
     hold off
 end
 

@@ -29,6 +29,7 @@ lambda = X\Y';
 
 
 %% OPTIMIZE SURROGATE MODEL AND UPDATAE AND SO ON
+besty = inf;
 S = @(x) createBasisFunction(x,basis)*lambda;
 for i = 1:10
     [xmin,ymin] = ParticleSwarm(S,100,2.05,2,[xbound;ybound],1000);
@@ -37,6 +38,11 @@ for i = 1:10
     %UPDATE SURROGATE BY ADDING THE REAL POINTS
     inputPoints = [inputPoints;xmin];
     Y = [Y,realY_min];
+    if realY_min < besty
+        besty  =realY_min ;
+        bestx = xmin;
+    end
+
     %REPEAT PROCESS OF MODEL CREATION
     X = ones(length(Y),1);
     for j = 1:basis
@@ -70,7 +76,8 @@ for i = 1:10
             %SET lÓÐRÉTTAR LÍNUR TIL AÐ SÝNA ERROR
             plot3([xmin(1) xmin(1)], [xmin(2) xmin(2)], [ymin realY_min], 'r', 'LineWidth', 1.5, 'HandleVisibility', 'off');
     error = rmse(ymin,realY_min);
-    sprintf('Root mean square error at surrogate minima = %f',error)
+    fprintf('Root mean square error at surrogate minima = %f, iteration = %d\n',error,i);
+    fprintf('Minimum x_1,x_2 = %s, min y = %f\n', mat2str(bestx),besty);
     hold off
 end
 
