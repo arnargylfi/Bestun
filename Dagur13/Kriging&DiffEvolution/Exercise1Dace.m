@@ -7,26 +7,26 @@ ub = [3, 2];   % Upper bounds [x_max, y_max]
 
 %-----TEKUR U.Þ.B (N)*10 SEK og SVO 10 SEK FYRIR HVERT ITERATION Í FOR LOOPINU-----
 
-N = 5; % CHOOSE NUMBER OF FUNCTION EVALUATIONS
+N = 5; % CHOOSE NUMBER OF INITIAL TRAINING POINTS
+iterations = 4;%CHOOSE NUMBER OF ITERATIONS
 
 % Generate random points
 inputPoints = lhsdesign(N, 2) .* (ub - lb) + lb;
 wrapped_f = @(row) exercise_1_function(inputPoints(row,:)); % Vectorized function evaluation
 tic
 Y = arrayfun(wrapped_f, 1:N); % EVALUATE
-toc
 
 %% CREATE MODEL
 close
-theta0 = [1, 1];  % Initial guess for the correlation parameters
-lob = [0.01, 0.01];  % Lower bounds for the correlation parameters
-upb = [10, 10];  % Upper bounds for the correlation parameters
+theta0 = [1, 1];  % Initial guess
+lob = [0.01, 0.01];  % Lower bounds
+upb = [10, 10];  % Upper bounds
 [dmodel, ~] = dacefit(inputPoints, Y', @regpoly0, @corrgauss, theta0, lob, upb);
 figure;
 %% OPTIMIZE SURROGATE MODEL AND UPDATE AND SO ON
-for i = 1:4
+for i = 1:iterations
     dace = @(x) predictor(x, dmodel);
-    
+    % figure;
     % Find the minimum of the surrogate model using Differential Evolution
     [ymin, xmin] = Diff_Evolution(dace, 2, [lb; ub], 5);
 
